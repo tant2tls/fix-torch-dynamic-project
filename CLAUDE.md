@@ -54,11 +54,18 @@ Neither correction touches a patch, a test, or a fix — only claim wording.
 
 ## The process gate that governs everything upstream
 
-PyTorch will not review a new contributor's PR without a linked issue labelled
-**`actionable`**. Order: **file issue → wait for label → push PR.** Also: sign the
-CLA; **never paste AI-generated fix explanations into an issue**; leave the
-**Reviewers list empty**; one concern per PR; `lintrunner -a` first. Details and
-exact quotes: `upstream/issues.md`.
+PyTorch's current policy says a new contributor's linked issue must already be
+labelled **`actionable`**. Treat the stored patches as internal experiments:
+**file the human-authored issue → wait for the label → prepare a fresh PR**.
+Only after the label should the work be rebased onto current `main` and run
+through focused tests, broader tests, lint, type, and pre-commit checks.
+
+Sign the CLA; keep one concern per PR. Leaving Reviewers empty is this repo's
+submission plan, not a quotation from `CONTRIBUTING.md`. Any AI-generated
+material used on GitHub must be disclosed and contained with human commentary.
+Never post raw assistant output or AI-written solution text in an issue, and
+never file, comment, push, or open a PR autonomously. Details:
+`upstream/issues.md`.
 
 ## Layout — six directories, each with its own README
 
@@ -95,13 +102,17 @@ near-identical names (`probe_bw2.py` … `probe_bw5.py`).
 
 ## The four findings
 
-1. **⭐ Issue A — WRONG PIXELS, no fix written.** Stock torch 2.13, no patches, no
-   custom op: `F.interpolate(mode="nearest")` under `dynamic=True` on **CUDA** picks a
-   different source pixel than eager. CPU exact, `dynamic=False` exact. Lives in the
-   **decomposition**, not the lowering the PRs touch. **File the issue; do not attempt
-   the fix** — there the divide is per-element, so the #164144/#165566 B200
-   performance objection applies, and our candidate fix costs a gradient (25/28 →
-   24/28), the same failure that killed PR #184848.
+1. **⭐ Issue A — WRONG PIXELS, no upstream-ready fix.** Stock torch 2.13, no
+   patches, no custom op: `F.interpolate(mode="nearest")` under `dynamic=True`
+   on **CUDA** picks a different source pixel than eager. CPU and static compile
+   are exact. It lives in the **decomposition**, not the lowering the PRs touch.
+   The scale divide is loop-invariant; the earlier per-element claim was wrong.
+   Both a decomposition fix and a symbolic-printer prototype repair forward but
+   reduce the gradient matrix from 25/28 to 24/28. The reason is upstream of
+   Inductor: native eager CUDA nearest backward is not the transpose of its own
+   forward map at sensitive ratios. This reproduces the open #97135
+   `needs reproduction` symptom; add a human-authored reproduction there and
+   coordinate forward/backward semantics before preparing a fix.
 2. **Issue B** — `upsample_nearestnd` crashes on a symbolic output size → **PR1**.
 3. **Issue C** — `ops.constant` accepts a symbolic value, fails ~12 frames later → **PR2**.
 4. **Issue D** — `upsample_nearest2d_backward` crashes on symbolic `input_size` → **PR3**.
@@ -174,6 +185,7 @@ lowering. Say so explicitly in both. Overclaiming reachability loses the review.
 | **2026-08-28** (later, `tan-1gpu-chip-0-1`) | 1× **H100** 80GB HBM3 | `evidence/RESULTS_a100.md` **§17**: prior art refreshed, PR #184848 authorship corrected, both defects re-verified against `main` from source, 2.3.1 artifact re-run **15/0 → 18/0** |
 | **2026-08-28** (later still, `tan-1gpu-chip-w-0-2`) | 1× **A100**-SXM4-80GB sm_80 | `evidence/RESULTS_a100.md` **§18**: second independent A100. 6/6 tests, 42/42 adversarial, 63-case no-op, `37→74` = 36/74 again. **Two perf claims corrected** (§18.4 `div_rn`, §18.5 PR2), Issue A's mechanism located at **bit level**, and a validated **predictor** for choosing filing ratios. 2.3.1 artifact re-run 15/0 → 18/0 |
 | **2026-08-30** (`tan-1gpu-chip-0-2`) | 1× **H100** 80GB HBM3 | `evidence/RESULTS_a100.md` **§19**: strict no-op re-measured as a **same-box ON/OFF A/B** (63/63 compiled results identical — cross-hardware digest comparisons are invalid, the eager hashes differ too), guard matrix 6/6 all four states, 42/42 adversarial, `37→74` re-explained as **divisor-form** dependence, prior art re-read from the **GitHub API**, Issue A's snippet run verbatim. Two documentation defects fixed. 2.3.1 artifact re-run 15/0 |
+| **2026-09-03** | 1× **RTX PRO 6000 Blackwell Server Edition**, sm_120 | `evidence/logs/blackwell_20260903.md`: guard matrix 6/6, 42/42 adversarial, same-device 63-case no-op, controlled perf, SymInt rounding-flag gap, and eager CUDA backward inconsistency. This is Blackwell evidence, not B200 evidence. |
 
 ⚠️ **`37→74` is not architecture-dependent — it is DIVISOR-FORM dependent (corrected
 2026-08-30, `RESULTS_a100.md` §19.3).** The earlier reading ("36/74 on A100, 0/74 on
@@ -215,6 +227,12 @@ than on luck. `evidence/issueA_ratio_classes.py` classifies 3586 ratios this way
 
 ## How to re-verify
 
+The default environment for upstream work in this checkout is the Conda
+environment `dynamic`; invoke it with `conda run -n dynamic ...` so commands do
+not depend on shell activation. Reconstruct it from `requirements-upstream.txt`.
+Keep the torch 2.3.1 artifact in a separate environment built from
+`requirements.txt`.
+
 The 2.3.1 artifact (needs a torch 2.3.1 env):
 
 ```bash
@@ -240,27 +258,22 @@ $PY evidence/adversarial_pr1.py      # 42 configs designed to break PR1
 
 ## Next actions, in order
 
-1. **File Issues B, C, D** from `upstream/issues.md` (re-run the prior-art searches —
-   they age; read labels from the API). Wait for `actionable`. Prior art was refreshed
-   2026-08-28 (`evidence/RESULTS_a100.md` §17) — **but from rendered pages, because
-   `api.github.com` was 403 rate-limited all session; re-read the labels from the API.**
-   Fold in the two new citations: **#185806** in Issue A, **#95698** in PR1.
-2. **File Issue A** — strongest finding. No fix. Lead its precedent with **#185806**
-   (`high priority`, `module: correctness (silent)`: an inexact float reciprocal on a
-   symbolic size, silently wrong) rather than #193959. **Headline `448→192` (7/192),
-   `384→363` (2/363), `448→368` (9/368) and `41→82` (40/82)** — all four are wrong under
-   both the literal- and symbolic-divisor forms, so they do not depend on the
-   maintainer's SM or on how the repro script scopes its variables. **Do not include
-   `37→74`**: 0/74 in the conservative form (see the divisor-form note above).
-   `evidence/issueA_runtime_divide.py` classifies any candidate ratio; the issue's
-   snippet was run verbatim on H100 2026-08-30 and prints exactly the counts it claims.
-3. **Sign the CLA**, fork, rebase onto current `origin/main`, `git am` the patches,
-   re-run tests, `lintrunner -a`, push **PR3 → PR1 → PR2** as separate PRs.
-4. **Public cut — LATER, and a deliberate step.** `PUBLISH.md` lists what to exclude
-   (`origin/`, `notebook/`) and what to rewrite. Not part of develop-phase work.
-5. Optional, unrelated: the `torch.compile` shape-variety sweep (~16 shapes efficient,
-   ≈uncompiled by ~100) is still **remembered, never measured**. Do not conflate it
-   with this bug.
+1. **Re-run every duplicate search and current label check.** The saved results age;
+   use GitHub's current issue state, not a cached rendered summary.
+2. **Write Issues A, B, C, and D in my own words.** Keep them problem-focused. For
+   Issue A, use robust `448→192`, `384→363`, `448→368`, and `41→82`; omit the
+   divisor-form-sensitive `37→74`. Cite #185806 as defect-class precedent, not as a
+   duplicate. Do not include AI-generated solution explanations.
+3. **Comment on existing #97135** with the new eager forward/backward invariant repro;
+   do not open a duplicate CUDA-nearest-backward issue.
+4. **Wait for `actionable`.** Do not upload the stored patches or open draft PRs
+   while the associated issues are unlabelled.
+5. **Only after that gate**, sign the CLA, create fresh branches from current `main`,
+   rebuild, re-run focused and broad tests plus lint/type/pre-commit checks, personally
+   review the diffs, then push separate PRs in the planned PR3 → PR1 → PR2 order.
+6. **Public cut — LATER.** `PUBLISH.md` lists exclusions and rewrites.
+7. Optional: the unrelated shape-variety sweep is remembered, never measured; do not
+   conflate it with this bug.
 
 ## Claim discipline — the highest-risk sentences in the repo
 

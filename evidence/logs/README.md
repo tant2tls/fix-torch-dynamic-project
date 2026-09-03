@@ -33,11 +33,14 @@ Each JSON maps 63 real `F.interpolate`/`nn.Upsample` configurations to a hash tr
 
 | file | what it is |
 |---|---|
-| `h100_20260828.md` | H100 re-verification: 6/6 tests, the full guard matrix, Issue A — including the finding that Issue A's **`37→74` case is A100-wrong but H100-clean**, so it must not be the headline repro. |
+| `h100_20260828.md` | H100 re-verification: 6/6 tests and guard matrix. Its initial A100-vs-H100 reading for `37→74` was later explained by literal-vs-symbolic divisor form, not architecture. |
+| `blackwell_20260903.md` | RTX PRO 6000 Blackwell verification, including the new SymInt rounding-flag gap and eager CUDA nearest-backward inconsistency. It must not be quoted as B200 data. |
+| `noop_blackwell_20260903_ON.json` / `noop_blackwell_20260903_OFF.json` | same-device 63-case Blackwell comparison; eager, compiled, and normalized-code differences are all 0/63 between patch states |
+| `perf_blackwell_20260903.json` | controlled RTX PRO 6000 division benchmark; no slowdown resolved here, but it does not supersede the ≈1.8% A100 result |
 | `a100_20260828_second.md` | the **second A100** session (`tan-1gpu-chip-w-0-2`): what reproduced unchanged, and the two performance claims it **corrected**. The prose version is `../RESULTS_a100.md` §18 — read that; this is the terse working note. |
 | `noop_ON_a100.json` | the 63-case no-op digest from that A100, patches ON. ⭐ Compared against `noop_ON.json` (H100) it shows **0/63 result-hash differences across a hardware change** while 50/63 code hashes differ — the strongest form of the "code hashes are not evidence" result. |
 | `perf_controlled.json` | the **controlled** `div_rn` vs `truediv` measurement (CUDA events, 15 A/B/A/B alternations, A-vs-A control first). Verdict: `div_rn` ≈**1.8% slower** at large shapes — **supersedes** the 0.96–0.98× figure in `../RESULTS_a100.md` §10. |
-| `issueA_ratio_classes.json` | 3586 upsample ratios classified ULP-robust (53) / one-sided (1634) / immune (1899), so Issue A's filing ratios are chosen by construction. `448→192` is robust; `37→74` is one-sided, which is exactly why it is architecture-dependent. |
+| `issueA_ratio_classes.json` | 3586 upsample ratios classified ULP-robust (53) / one-sided (1634) / immune (1899), so Issue A's filing ratios are chosen by construction. `448→192` is robust; `37→74` is one-sided and therefore sensitive to literal-vs-symbolic divisor form. |
 
 ## Reproducing
 

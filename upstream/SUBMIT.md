@@ -25,8 +25,10 @@ the **`actionable`** label:
 > "you must wait for a maintainer to review it and mark it actionable before preparing
 > and sending a PR for it."
 
-So: **file Issues B, C, D → wait for `actionable` → then push the PRs.** Do not push
-first. `issues.md` has the bodies, the prior-art search, and the filing order.
+So: **write and file Issues A, B, C, D → wait for `actionable` → then prepare the PRs.**
+Add the eager backward reproduction as a comment on existing #97135 rather than opening
+a duplicate. Do not push first. `issues.md` has working notes, prior-art search, and
+the filing order; rewrite the issue text in your own words before filing.
 
 ## ⚠️ `AI_POLICY.md` — read before writing a single word of a PR or issue
 
@@ -229,10 +231,11 @@ git push fork prseries:upsample-symbolic-output-size
 ## Held back deliberately
 
 - **Issue A** (wrong pixels from plain `F.interpolate` under `dynamic=True` on CUDA) is
-  the strongest finding but has **no fix written**. It lives in the decomposition, where
-  the divide *is* per-element — so the #164144 performance objection applies directly and
-  a naive `div_rn` there would likely be rejected or gated. File the issue; do not
-  attempt the fix in this batch.
+  the strongest finding but has **no upstream-ready fix**. Its emitted scale divide is
+  loop-invariant. A forward-only prototype still loses one gradient case because native
+  eager CUDA backward is not always the transpose of its own forward map. Add the fresh
+  reproduction to existing #97135, then coordinate forward and backward semantics before
+  attempting a fix.
 - **Issue E** (`adaptive_avg_pool2d` under dynamic shapes) — pre-existing, confirmed
   identical with all patches reverted. Hold until the others are triaged; five issues at
   once from a new account reads worse than three good ones.

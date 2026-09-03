@@ -1,0 +1,321 @@
+{
+ "cases": {
+  "adaptavg_(100, 70)_(50, 35)_dyn0": [
+   "4e0fc079824d606a",
+   "92f47204386efef2",
+   "4e0fc079824d606a"
+  ],
+  "adaptavg_(63, 61)_(7, 7)_dyn0": [
+   "b3cd5ef8ac3930e6",
+   "4db26ffba4d5adab",
+   "b3cd5ef8ac3930e6"
+  ],
+  "adaptavg_(64, 64)_(32, 32)_dyn0": [
+   "1e0fd95707ecee73",
+   "4bb91b8b68b381d8",
+   "1e0fd95707ecee73"
+  ],
+  "bwd_nearest-exact_dyn0_(32, 32)_(64, 64)": [
+   "9d0ac8e0776366a6",
+   "n/a",
+   "9d0ac8e0776366a6"
+  ],
+  "bwd_nearest-exact_dyn0_(33, 31)_(99, 62)": [
+   "0cabc75c2ba29ad1",
+   "n/a",
+   "0cabc75c2ba29ad1"
+  ],
+  "bwd_nearest-exact_dyn0_(64, 64)_(32, 32)": [
+   "0cdd50575959855d",
+   "n/a",
+   "0cdd50575959855d"
+  ],
+  "bwd_nearest-exact_dyn1_(32, 32)_(64, 64)": [
+   "9d0ac8e0776366a6",
+   "n/a",
+   "9d0ac8e0776366a6"
+  ],
+  "bwd_nearest-exact_dyn1_(33, 31)_(99, 62)": [
+   "0cabc75c2ba29ad1",
+   "n/a",
+   "0cabc75c2ba29ad1"
+  ],
+  "bwd_nearest-exact_dyn1_(64, 64)_(32, 32)": [
+   "0cdd50575959855d",
+   "n/a",
+   "0cdd50575959855d"
+  ],
+  "bwd_nearest_dyn0_(32, 32)_(64, 64)": [
+   "9d0ac8e0776366a6",
+   "n/a",
+   "9d0ac8e0776366a6"
+  ],
+  "bwd_nearest_dyn0_(33, 31)_(99, 62)": [
+   "0cabc75c2ba29ad1",
+   "n/a",
+   "0cabc75c2ba29ad1"
+  ],
+  "bwd_nearest_dyn0_(64, 64)_(32, 32)": [
+   "a7428e4913a7d249",
+   "n/a",
+   "a7428e4913a7d249"
+  ],
+  "bwd_nearest_dyn1_(32, 32)_(64, 64)": [
+   "9d0ac8e0776366a6",
+   "n/a",
+   "9d0ac8e0776366a6"
+  ],
+  "bwd_nearest_dyn1_(33, 31)_(99, 62)": [
+   "0cabc75c2ba29ad1",
+   "n/a",
+   "0cabc75c2ba29ad1"
+  ],
+  "bwd_nearest_dyn1_(64, 64)_(32, 32)": [
+   "a7428e4913a7d249",
+   "n/a",
+   "a7428e4913a7d249"
+  ],
+  "fwd1d_nearest-exact_dyn0": [
+   "f6981372638acd3c",
+   "66977ff6f58f6308",
+   "f6981372638acd3c"
+  ],
+  "fwd1d_nearest-exact_dyn1": [
+   "f6981372638acd3c",
+   "32d4ad55ad656d9a",
+   "f6981372638acd3c"
+  ],
+  "fwd1d_nearest_dyn0": [
+   "cb48908eb6805bc0",
+   "d96d219ece2026eb",
+   "cb48908eb6805bc0"
+  ],
+  "fwd1d_nearest_dyn1": [
+   "cb48908eb6805bc0",
+   "043ff2537216f09c",
+   "cb48908eb6805bc0"
+  ],
+  "fwd2d_sf_nearest-exact_dyn0_0.5": [
+   "f7877691b9074fd4",
+   "58333bafc9cb4876",
+   "f7877691b9074fd4"
+  ],
+  "fwd2d_sf_nearest-exact_dyn0_1.5": [
+   "af7efd0d0c752280",
+   "9c9ea0f7263ce6e6",
+   "af7efd0d0c752280"
+  ],
+  "fwd2d_sf_nearest-exact_dyn0_2.0": [
+   "c6d0182737d3a546",
+   "8a3cf651f4c20112",
+   "c6d0182737d3a546"
+  ],
+  "fwd2d_sf_nearest-exact_dyn0_3.0": [
+   "b7db1aa7b9a24ed5",
+   "94f97323ecd6d9ad",
+   "b7db1aa7b9a24ed5"
+  ],
+  "fwd2d_sf_nearest-exact_dyn1_0.5": [
+   "f7877691b9074fd4",
+   "ee588e4bb8bdb257",
+   "f7877691b9074fd4"
+  ],
+  "fwd2d_sf_nearest-exact_dyn1_1.5": [
+   "af7efd0d0c752280",
+   "4608acac8fcf82ca",
+   "af7efd0d0c752280"
+  ],
+  "fwd2d_sf_nearest-exact_dyn1_2.0": [
+   "c6d0182737d3a546",
+   "e19a70038ccae82b",
+   "c6d0182737d3a546"
+  ],
+  "fwd2d_sf_nearest-exact_dyn1_3.0": [
+   "b7db1aa7b9a24ed5",
+   "d863afbd711d9f7a",
+   "b7db1aa7b9a24ed5"
+  ],
+  "fwd2d_sf_nearest_dyn0_0.5": [
+   "7318f2e354b8e567",
+   "da5ed39db7972a07",
+   "7318f2e354b8e567"
+  ],
+  "fwd2d_sf_nearest_dyn0_1.5": [
+   "ed5b823d1bd27cb3",
+   "78bf9c914ce54236",
+   "ed5b823d1bd27cb3"
+  ],
+  "fwd2d_sf_nearest_dyn0_2.0": [
+   "c6d0182737d3a546",
+   "bb05437f9a5abd6c",
+   "c6d0182737d3a546"
+  ],
+  "fwd2d_sf_nearest_dyn0_3.0": [
+   "b7db1aa7b9a24ed5",
+   "cf546e6310c14e64",
+   "b7db1aa7b9a24ed5"
+  ],
+  "fwd2d_sf_nearest_dyn1_0.5": [
+   "7318f2e354b8e567",
+   "3746d1ec301dc4cc",
+   "7318f2e354b8e567"
+  ],
+  "fwd2d_sf_nearest_dyn1_1.5": [
+   "ed5b823d1bd27cb3",
+   "00aba5379256772e",
+   "ed5b823d1bd27cb3"
+  ],
+  "fwd2d_sf_nearest_dyn1_2.0": [
+   "c6d0182737d3a546",
+   "ca36b8299b4a6cbf",
+   "c6d0182737d3a546"
+  ],
+  "fwd2d_sf_nearest_dyn1_3.0": [
+   "b7db1aa7b9a24ed5",
+   "b3ac6d6f470976b8",
+   "b7db1aa7b9a24ed5"
+  ],
+  "fwd2d_size_nearest-exact_dyn0_(32, 32)_(100, 70)": [
+   "c9551e8865aa0c40",
+   "54ee1371e43ab539",
+   "c9551e8865aa0c40"
+  ],
+  "fwd2d_size_nearest-exact_dyn0_(32, 32)_(64, 64)": [
+   "c6d0182737d3a546",
+   "8a3cf651f4c20112",
+   "c6d0182737d3a546"
+  ],
+  "fwd2d_size_nearest-exact_dyn0_(37, 41)_(74, 82)": [
+   "1eddef261be5745a",
+   "44c80d178e2024f0",
+   "1eddef261be5745a"
+  ],
+  "fwd2d_size_nearest-exact_dyn0_(384, 384)_(363, 363)": [
+   "a79e774f0d14205f",
+   "e342632ee9c5edda",
+   "a79e774f0d14205f"
+  ],
+  "fwd2d_size_nearest-exact_dyn0_(448, 448)_(192, 192)": [
+   "2fa2fdd3a66b1018",
+   "df0fa9e8f858faf7",
+   "2fa2fdd3a66b1018"
+  ],
+  "fwd2d_size_nearest-exact_dyn1_(32, 32)_(100, 70)": [
+   "c9551e8865aa0c40",
+   "35791a428da6bae3",
+   "c9551e8865aa0c40"
+  ],
+  "fwd2d_size_nearest-exact_dyn1_(32, 32)_(64, 64)": [
+   "c6d0182737d3a546",
+   "35791a428da6bae3",
+   "c6d0182737d3a546"
+  ],
+  "fwd2d_size_nearest-exact_dyn1_(37, 41)_(74, 82)": [
+   "1eddef261be5745a",
+   "35791a428da6bae3",
+   "1eddef261be5745a"
+  ],
+  "fwd2d_size_nearest-exact_dyn1_(384, 384)_(363, 363)": [
+   "9ffec6f9b2e78092",
+   "35791a428da6bae3",
+   "a79e774f0d14205f"
+  ],
+  "fwd2d_size_nearest-exact_dyn1_(448, 448)_(192, 192)": [
+   "2fa2fdd3a66b1018",
+   "35791a428da6bae3",
+   "2fa2fdd3a66b1018"
+  ],
+  "fwd2d_size_nearest_dyn0_(32, 32)_(100, 70)": [
+   "a26dde0afa73924d",
+   "9d5dac59ff0fb3a1",
+   "a26dde0afa73924d"
+  ],
+  "fwd2d_size_nearest_dyn0_(32, 32)_(64, 64)": [
+   "c6d0182737d3a546",
+   "bb05437f9a5abd6c",
+   "c6d0182737d3a546"
+  ],
+  "fwd2d_size_nearest_dyn0_(37, 41)_(74, 82)": [
+   "1eddef261be5745a",
+   "728df21f44ae26e9",
+   "1eddef261be5745a"
+  ],
+  "fwd2d_size_nearest_dyn0_(384, 384)_(363, 363)": [
+   "1a52a497510ef382",
+   "d6589fa6a3a7e157",
+   "1a52a497510ef382"
+  ],
+  "fwd2d_size_nearest_dyn0_(448, 448)_(192, 192)": [
+   "5370d6bd53ad9532",
+   "427854ceac666197",
+   "5370d6bd53ad9532"
+  ],
+  "fwd2d_size_nearest_dyn1_(32, 32)_(100, 70)": [
+   "a26dde0afa73924d",
+   "b109def117778a07",
+   "a26dde0afa73924d"
+  ],
+  "fwd2d_size_nearest_dyn1_(32, 32)_(64, 64)": [
+   "c6d0182737d3a546",
+   "b109def117778a07",
+   "c6d0182737d3a546"
+  ],
+  "fwd2d_size_nearest_dyn1_(37, 41)_(74, 82)": [
+   "6d7c8011e243104e",
+   "b109def117778a07",
+   "1eddef261be5745a"
+  ],
+  "fwd2d_size_nearest_dyn1_(384, 384)_(363, 363)": [
+   "839a3320f361dcf4",
+   "b109def117778a07",
+   "1a52a497510ef382"
+  ],
+  "fwd2d_size_nearest_dyn1_(448, 448)_(192, 192)": [
+   "2ff9330b9684210f",
+   "b109def117778a07",
+   "5370d6bd53ad9532"
+  ],
+  "fwd3d_nearest-exact_dyn0": [
+   "6a8f8666cf4a2d07",
+   "01d2e21c86629ce4",
+   "6a8f8666cf4a2d07"
+  ],
+  "fwd3d_nearest-exact_dyn1": [
+   "6a8f8666cf4a2d07",
+   "90c5dc7ffc733b87",
+   "6a8f8666cf4a2d07"
+  ],
+  "fwd3d_nearest_dyn0": [
+   "7c53742f2daa6ae4",
+   "d16c4a413db7922a",
+   "7c53742f2daa6ae4"
+  ],
+  "fwd3d_nearest_dyn1": [
+   "7c53742f2daa6ae4",
+   "a052fdced1235ffa",
+   "7c53742f2daa6ae4"
+  ],
+  "mod2d_nearest-exact_dyn0": [
+   "8679bd92d043f971",
+   "cf7e16145736b614",
+   "8679bd92d043f971"
+  ],
+  "mod2d_nearest-exact_dyn1": [
+   "8679bd92d043f971",
+   "3fa2a1a2e496906e",
+   "8679bd92d043f971"
+  ],
+  "mod2d_nearest_dyn0": [
+   "8679bd92d043f971",
+   "70f1281a98298fcd",
+   "8679bd92d043f971"
+  ],
+  "mod2d_nearest_dyn1": [
+   "8679bd92d043f971",
+   "fd1080cc00c9a9ca",
+   "8679bd92d043f971"
+  ]
+ },
+ "device": "cuda",
+ "torch": "2.13.0+cu130"
+}

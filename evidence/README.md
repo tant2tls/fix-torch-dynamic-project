@@ -25,7 +25,8 @@ patch state it was measured in is ambiguous — an env was once found in state
 | file | what it holds |
 |---|---|
 | `RESULTS_a100.md` | ⭐ **the evidence document**, §1–§18: guard matrix, no-op proof, perf, prior-art search, and the corrections where an earlier claim was measured wrong. ⚠️ Named for the A100 session but no longer A100-only — **§17 is the 2026-08-28 H100 re-check** (refreshed prior art, the corrected read of PR #184848, both defects re-verified against `main` from source), and **§18 is a second, independent A100**. Read §18 before quoting any performance number: it corrects §10's `div_rn` figure (≈2% *slower*, not faster) and §13.2's PR2 cost (≈3.9% of lowering time, not 0.98×), locates Issue A's mechanism at bit level, and turns the choice of filing ratios into a measured decision. |
-| `logs/h100_20260828.md` | the H100 re-verification: 6/6 tests, full guard matrix, Issue A + the `37→74` architecture difference |
+| `logs/h100_20260828.md` | H100 re-verification: 6/6 tests and guard matrix; its initial `37→74` hardware interpretation is superseded by the divisor-form explanation in `RESULTS_a100.md` §19 |
+| `logs/blackwell_20260903.md` | RTX PRO 6000 Blackwell verification: guard matrix, adversarial/no-op checks, controlled performance, SymInt rounding-flag gap, and the eager CUDA backward invariant failure |
 | `logs/noop_{ON,OFF}.json` | result+code hashes over 63 ATen configs, patches on and off |
 | `logs/ctrl_OFF_{a,b}.json` | ⭐ the **A-vs-A control**: two runs of the *identical* state. Proves generated-Triton hashes differ in 50/63 cases anyway, so only *result* hashes are load-bearing |
 | `logs/final_dynshapes_ON.*` | the 2621-test dynamic-shapes suite (summary + tail) |
@@ -62,8 +63,10 @@ patch state it was measured in is ambiguous — an env was once found in state
 | `issueA_arch_divide_bits.py` | why ratios differ at bit level: inductor's `truediv` lands **+1 ULP** above eager for 448→192 / 384→363 but **−1 ULP** below for 37→74. ⚠️ Still valid for the *literal-divisor* form; it is **not** the whole story — see `issueA_runtime_divide.py`. |
 | `issueA_ratio_classes.py` | classifies 3586 ratios into ULP-robust (53) / one-sided (1634) / immune (1899), so filing ratios are chosen **by construction**. `448→192` is robust; `384→363` and `37→74` are one-sided — which is the `37→74` trap. ⚠️ Its reference must be **eager fp32**, not exact rational, and ULP steps must walk the **fp32 bit pattern** (`math.nextafter` steps in float64 and is a silent no-op) |
 | `issueA_predict_validate.py` | ⭐ the falsification test: the model **commits first**, then real `torch.compile(F.interpolate)` runs. **12/12 exact** on ratios never tested here — row indices *and* substituted pixels — including 5 predicted-clean cases, so it is falsifiable rather than biased toward "wrong" |
-| `issueA_candidate_fix.py`, `issueA_fix_validate.py` | ⚠️ a `sym_float` fix that **works forward but costs a gradient** (25/28 → 24/28) — the same failure that killed upstream PR #184848. Why Issue A ships as an issue with no fix |
-| `bwd_mismatch_triage.py` | the backward op is not bit-exact for every ratio; float64 drops the diff to ~7e-15, so it is summation-order noise, not a wrong index |
+| `issueA_candidate_fix.py`, `issueA_fix_validate.py` | ⚠️ a `sym_float` fix that **works forward but costs a gradient** (25/28 → 24/28). Why Issue A has no upstream-ready forward-only fix |
+| `bwd_mismatch_triage.py` | an early compiled/eager triage. Its float64 experiment reduced one residual but did not test whether backward transposes the observed forward map; do not use it to claim all differences are summation noise |
+| `eager_nearest_backward_consistency.py` | ⭐ eager-only invariant: all CPU controls pass, while CUDA nearest backward disagrees with its own forward map at ULP-sensitive ratios. This identifies the blocker behind the gradient matrix and reproduces the class of open issue #97135 |
+| `symint_division_rounding.py` | positive control showing the eager-numerics flag fixes integer-tensor division but does not reach dynamic `SymInt / SymInt`; generic shape math remains wrong at 191/192 values |
 | `adaptavg_preexisting.py` | Issue E reproduces identically with all patches reverted |
 | `same_bug_as_175154.py` | proves our Issue A and upstream #175154 are **distinct** defects |
 | `eval_175154_attempts.py` | scores all four candidate fixes for #175154 on four axes at once |

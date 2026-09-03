@@ -1,0 +1,13 @@
+# Canonical runtime for current/upstream experiments and Blackwell validation.
+# Install into the `dynamic` Conda environment:
+#   conda run -n dynamic python -m pip install -r requirements-upstream.txt
+#
+# Keep the historical torch 2.3.1 artifact in a separate environment; its
+# dependency set remains in requirements.txt.
+--index-url https://download.pytorch.org/whl/cu130
+--extra-index-url https://pypi.org/simple
+torch==2.13.0+cu130
+numpy==2.4.6
+expecttest==0.3.0
+hypothesis==6.167.1
+pytest==9.1.1

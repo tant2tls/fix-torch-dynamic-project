@@ -19,6 +19,12 @@ was that the bug needed *three simultaneous ingredients*, the third of which is
 invisible unless you know how ATen dispatch interacts with decompositions — and four
 reasonable attempts to reproduce it failed first (§4).
 
+I found the production failure, reduced it, and wrote the original fix while debugging
+my own dynamic-shape workload. I later used Claude and Codex as supporting tools: to
+challenge measurements, organize the upstream material, and look for adjacent failure
+modes. The core bug and fix are my work; assistant-derived follow-ups are labelled as
+such instead of being folded into that story.
+
 ---
 
 ## Honest status, before anything else
@@ -31,7 +37,7 @@ I would rather you read these five lines than discover them later.
 | Was it a wrong-results bug? | **No — a compile-time crash.** Numerics were bit-exact throughout. |
 | Is anything merged into PyTorch? | **No. Nothing has been pushed.** The three patches are written, GPU-verified, and staged. |
 | Then why does the repo exist? | The deployment was pinned to 2.3.1 and needed the compiled path. The reasoning is the deliverable. |
-| Did the same investigation find anything live? | **Yes** — plain `F.interpolate` under `dynamic=True` on CUDA returns **wrong pixels** on current 2.13. That one has no fix and is the strongest finding ([§6](#6-upstream-what-i-found-on-current-main)). |
+| Did the same investigation find anything live? | **Yes** — plain `F.interpolate` under `dynamic=True` on CUDA returns **wrong pixels** on current 2.13. A forward prototype works, but a newly isolated CUDA backward inconsistency makes it unsafe to submit alone ([§6](#6-upstream-what-i-found-on-current-main)). |
 
 ---
 
@@ -367,7 +373,8 @@ silently rot.
 ## 6. Upstream: what I found on current `main`
 
 Having understood the 2.3.1 defect, I ran the same investigation against `main`. Four
-independent findings, on 1× A100-SXM4-80GB and re-verified on H100, torch 2.13.0+cu130.
+independent findings, first on A100 and H100 and now re-verified on an RTX PRO 6000
+Blackwell GPU, torch 2.13.0+cu130.
 Narrative in **[`PR.md`](PR.md)**; submission material in **[`upstream/`](upstream/)**;
 every measurement in **[`evidence/`](evidence/)**.
 
@@ -391,11 +398,20 @@ Modelling ATen's `UpSample.h` exactly over 9 ratios / 3305 coordinates: the emit
 divide disagrees with eager on **45**, `div_rn` on **0**.
 
 It lives in the **decomposition**, a different code path from the lowering the patches
-touch. **No fix attempted, deliberately:** there the divide is *per-element* in a
-memory-bound gather — exactly the case that got
-[#164144](https://github.com/pytorch/pytorch/pull/164144) reverted and then gated
-behind a flag after a B200 throughput regression. My candidate fix also costs a
-gradient (25/28 → 24/28). File it; let maintainers choose the remedy.
+touch. I initially described its divide as per-element; emitted-code inspection proved
+that wrong. The scale divide is loop-invariant. That removes one performance objection,
+but it does not make the obvious patch safe. Both a decomposition change and a
+symbolic-printer prototype repair the forward result while reducing the gradient matrix
+from 25/28 to 24/28.
+
+The reason is deeper than Inductor. A new eager-only check reconstructs the exact source
+indices selected by CUDA forward and compares `forward(x).sum().backward()` with their
+histogram. On Blackwell, native CUDA backward is not the transpose of native forward at
+three ULP-sensitive cases (14/448 wrong input gradients for nearest 448→192, 4/384 for
+nearest 384→363, and 4/384 for nearest-exact 384→363); every CPU control passes. This
+matches the still-open [#97135](https://github.com/pytorch/pytorch/issues/97135), so the
+right upstream action is to add the fresh reproduction there and coordinate forward and
+backward semantics before proposing the dynamic-forward fix.
 
 ⚠️ **Which ratios are visible depends on the emitted divide's form, not just the GPU** —
 worth knowing before anyone reports a non-reproduction. Inductor emits `ks0 / 192` when
@@ -445,6 +461,14 @@ Overclaiming reachability is the fastest way to lose a review.
   known to have run.
 - **Full dynamic-shapes suite: 2621 tests, 1 failure — pre-existing**, identical with
   all patches reverted.
+- **RTX PRO 6000 Blackwell:** the full six-test guard matrix, 42/42 adversarial cases,
+  and a same-device 63-case ON/OFF digest all pass. The controlled division benchmark
+  resolves no slowdown on this GPU, but does not replace the A100 ≈2% result or imply
+  anything about B200. See [`evidence/logs/blackwell_20260903.md`](evidence/logs/blackwell_20260903.md).
+- **Codex follow-up:** `TORCHINDUCTOR_EMULATE_DIVISION_ROUNDING=1` fixes ordinary
+  integer-tensor division but does not reach the equivalent `IntTrueDiv` symbolic-shape
+  path. The generic repro remains wrong at 191/192 values. This is a separate lead, not
+  part of the three prepared patches.
 
 ### Status
 
@@ -514,6 +538,19 @@ origin/        the production traceback this started from (paths redacted, frame
 ---
 
 ## 9. Environment, and what is *not* claimed
+
+For current/upstream work in this checkout, the canonical runtime is the Conda
+environment named `dynamic`:
+
+```bash
+conda run -n dynamic python -m pip install -r requirements-upstream.txt
+conda run -n dynamic python repro/check_upstream.py
+```
+
+Keep the PyTorch 2.3.1 teaching artifact in a separate compatibility
+environment. Installing `requirements.txt` into `dynamic` would downgrade the
+upstream runtime and make its evidence incomparable. See `AGENTS.md` for the
+full experiment and patch-state protocol.
 
 | | |
 |---|---|

@@ -4,6 +4,12 @@ A report of the upstream work that came out of this project. The teaching artifa
 directory (torch 2.3.1, `repro/` + `patch/` + `tests/`) is what *found* the bug; this file
 is what happened when the same defect was chased on current `main`.
 
+The original workload, reduction, diagnosis, and local fix are mine. Claude and Codex
+were used later as supporting tools for adversarial review, experiment design,
+documentation, and explicitly labelled follow-up investigations. Nothing here should
+be represented as an autonomous contribution, and I remain responsible for every claim
+or line eventually sent upstream.
+
 **Everything referenced here now lives in this repository:** the issue drafts and
 per-PR submission docs in [`upstream/`](upstream/), the `git am`-ready patches in
 [`upstream/patches/`](upstream/patches/), the full A100 evidence in
@@ -17,7 +23,7 @@ needed here.
 
 | | |
 |---|---|
-| **Verified on** | 1× A100-SXM4-80GB, driver 575.57.08 |
+| **Verified on** | A100-SXM4-80GB, H100 80GB HBM3, and RTX PRO 6000 Blackwell Server Edition |
 | **torch** | 2.13.0+cu130 (release wheel, git `cf30153c`), triton 3.7.1, python 3.12.14 |
 | **CPU checks** | torch 2.13.0+cpu |
 | **Branch** | `prseries` on `b1716d913a`, +299/−5 across 3 files |
@@ -27,20 +33,38 @@ needed here.
 
 ## 1. The process gate: issues before PRs
 
-PyTorch will not review a new contributor's PR without a linked issue carrying the
-**`actionable`** label:
+PyTorch's current guidance for a new contributor is stricter than simply linking an
+issue: the linked issue must already carry the **`actionable`** label.
 
-> "Only PRs that address issues labeled `actionable` will be considered for review."
-> "you must wait for a maintainer to review it and mark it actionable before preparing and
-> sending a PR for it."
-> — [The Ultimate Guide to PyTorch Contributions](https://github.com/pytorch/pytorch/wiki/The-Ultimate-Guide-to-PyTorch-Contributions)
+> Only PRs that address issues labeled `actionable` will be considered for review.
+> If an issue was just opened, wait for a maintainer to mark it actionable before
+> preparing and sending a PR.
+> — [CONTRIBUTING.md](https://github.com/pytorch/pytorch/blob/main/CONTRIBUTING.md)
 
-From `CONTRIBUTING.md`: sign the **CLA** first; **never paste AI-generated fix explanations
-into an issue**; **leave the Reviewers list empty** (a triage squad assigns — do not
-@-mention maintainers); `lintrunner -a` before pushing; "you are
-personally responsible for what you send."
+The patches in this repository are private research artifacts. They demonstrate the
+candidate changes and guard tests, but they must not be uploaded or presented as
+review-ready branches before the issue gate is satisfied.
 
-So the order is **file issue → wait for `actionable` → push the PR**, three separate PRs.
+Before any external action:
+
+- Search again for duplicates and use the existing issue when one matches.
+- Write the issue concisely in my own words: observed behavior, minimal reproduction,
+  expected result, versions, and why the difference matters; no AI-written solution.
+- Wait for a maintainer to label that issue `actionable`.
+- After that label, rebase a fresh one-concern branch on current `main`, rebuild, and
+  run the focused tests, linters, type checks, and relevant broader suite.
+- Sign the CLA before the PR can be accepted.
+
+PyTorch's [AI policy](https://github.com/pytorch/pytorch/blob/main/AI_POLICY.md) also
+requires any AI-generated content used on GitHub to be clearly disclosed and
+contained, with human commentary explaining why it matters. Raw or lightly reviewed
+output must not be posted, and I must understand and take responsibility for the code.
+
+This repository plans to leave the Reviewers field empty for triage; that is a local
+submission choice, not a quotation from `CONTRIBUTING.md`.
+
+Therefore the external sequence is **human-authored issue → wait for `actionable` →
+prepare one fresh PR → human review and explicit approval → push**.
 
 ## 2. What was found
 
@@ -78,14 +102,24 @@ Modelling ATen's `UpSample.h` exactly (float32 scale, float32 multiply, floor, c
 | `I / O` (what is emitted today) | **45** |
 | `tl.math.div_rn(I, O)` | **0** |
 
-**No fix attempted, on purpose.** There the divide is *per-element* in a memory-bound
-gather, which is exactly the case that
-[PR #164144](https://github.com/pytorch/pytorch/pull/164144) hit: it made `truediv` emit
-`div_rn` globally, merged, was reverted several times, and was finally gated behind
-`TORCHINDUCTOR_EMULATE_DIVISION_ROUNDING` by
-[#165566](https://github.com/pytorch/pytorch/pull/165566) after ~28% B200 throughput loss
-([#164301](https://github.com/pytorch/pytorch/issues/164301)). File the issue; let
-maintainers choose the remedy.
+**The divide is loop-invariant.** I earlier called it per-element; inspection of the
+generated kernel disproved that claim. On the RTX PRO 6000 Blackwell run, the controlled
+`div_rn` benchmark did not resolve a slowdown, but that result cannot be generalized
+to B200 and does not erase the measured ≈2% A100 cost.
+
+The direct forward fix is still not ready. Both `torch.sym_float(isize) / osize` and
+an `IntTrueDiv` printer prototype fix the forward mismatch, but the gradient matrix
+falls from 25/28 to 24/28. An eager-only invariant test explains why: native CUDA
+nearest backward is not the transpose of its own forward map at 448→192 (14/448 input
+gradients differ) and 384→363 (4/384); nearest-exact 384→363 also differs at 4/384.
+Every CPU control and stable CUDA ratio passes. This is a semantic mismatch, not
+floating-point accumulation noise.
+
+The upstream backward symptom matches the still-open
+[#97135](https://github.com/pytorch/pytorch/issues/97135), currently labelled
+`needs reproduction`. The next external step is a human-authored reproduction comment
+there. A coordinated forward/backward design belongs on that issue before any dynamic
+forward patch is prepared.
 
 ### B — `upsample_nearestnd` crashes on a symbolic output size → **PR 1**
 
@@ -116,6 +150,17 @@ TypeError: 'FloorDiv' object cannot be interpreted as an integer
 `cannot determine truth value of Relational`. Pre-existing, confirmed identical with all
 patches reverted, untouched by these PRs. Filing five issues at once from a new account
 reads worse than filing four good ones.
+
+### Codex follow-up — symbolic division ignores the eager-numerics flag
+
+`evidence/symint_division_rounding.py` uses ordinary integer-tensor division as a
+positive control. Enabling `TORCHINDUCTOR_EMULATE_DIVISION_ROUNDING` fixes that control,
+but the equivalent dynamic `SymInt / SymInt` remains wrong at 191/192 values.
+
+A printer prototype makes the generic forward result exact, but it is not a PR candidate:
+the interpolation gradient blocker above still applies, current `main` must be executed
+from source, and large symbolic values need a semantics review. This is deliberately
+separate from my original fix and from PRs 1–3.
 
 ## 3. The three PRs
 
@@ -262,27 +307,30 @@ Each of these cost real time and each produced a result that *looked* fine:
 
 ## 7. What remains
 
-- [ ] Sign the CLA
-- [ ] File Issues A, B, C, D (`upstream/issues.md`); wait for **`actionable`**
-- [ ] Re-run the prior-art searches — they age
-- [ ] Rebase onto current `origin/main`; re-run the guard matrix afterwards
-- [ ] Re-run `pr2_blast_radius.py` — the six hand-guard line numbers and the 13/1157 counts
-      are `main`-dependent and will drift
-- [ ] `lintrunner -a`; push one branch per PR, Reviewers empty
-- [ ] Optional: run the 2621-test suite once with patches OFF for a symmetric comparison
+- [ ] Sign the CLA.
+- [ ] Re-run the prior-art searches; they age.
+- [ ] Write Issues A/B/C/D in my own words from `upstream/issues.md`: concise
+      observed behavior and repro only, with no AI-generated solution text.
+- [ ] Add the eager backward reproduction to existing issue #97135; do not duplicate it.
+- [ ] Wait for each proposed PR's issue to receive **`actionable`**.
+- [ ] Do not push the current research patches or open draft PRs before that label.
+- [ ] Only then create a fresh branch from current `main`, rebuild, and run focused
+      plus relevant broader tests.
+- [ ] Re-run the guard matrix and `pr2_blast_radius.py`; its source counts will drift.
+- [ ] Run lint, type, and pre-commit checks; keep one concern per PR.
+- [ ] Personally review the exact diff and disclosure text before any push.
+- [ ] Optional: run the 2621-test suite once with patches OFF for symmetry.
 
 ## 8. Claim discipline
 
 The accurate sentence for a CV, SoP, or email — **nothing is merged, nothing is even
 pushed**:
 
-> Diagnosed a TorchInductor dynamic-shape crash on a pinned torch version, shipped a
-> verified local fix, then confirmed upstream had independently solved the reachable path at
-> two layers while the caller-side defect stayed latent on `main` — and prepared three
-> upstream fixes plus four issue reports against current `main`, each with a regression test
-> that fails when only its own fix is reverted, verified as a strict no-op over 63 real
-> upsample configurations on an A100.
+> Diagnosed a TorchInductor dynamic-shape compiler crash in a production diffusion
+> workload, reduced its dispatch/decomposition trigger, shipped a verified local
+> one-line fix for a pinned PyTorch 2.3.1 stack, and developed issue-gated upstream
+> candidates with CPU, A100, H100, and Blackwell validation.
 
 **Never** write "fixed a bug in PyTorch," "my PR was merged," or "found an open PyTorch
-bug" without saying which of the four findings and what its status is. Issue A is the only
-one that is a live user-visible wrong-results bug, and it has no fix.
+bug" without saying which finding and what its status is. Issue A is a live
+user-visible wrong-results bug, but it has no upstream-ready fix.

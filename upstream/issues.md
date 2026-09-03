@@ -11,6 +11,12 @@ So the order is: **file issue → wait for `actionable` → then open the PR lin
 corresponding issue with the 'actionable' label," and "you must wait for a maintainer
 to review it and mark it actionable before preparing and sending a PR for it."
 
+
+**Working notes, not paste-ready issue bodies.** The quoted sections below collect
+measured facts and minimal repros. Before filing, I must rewrite each report concisely
+in my own words, remove solution discussion, re-run its claims, and personally approve
+the exact text.
+
 Two more rules from `CONTRIBUTING.md` that shape what goes in these issues:
 
 - **Do not paste AI-generated explanations of how to fix it into the issue.** "You
@@ -19,8 +25,8 @@ Two more rules from `CONTRIBUTING.md` that shape what goes in these issues:
   belongs in the PR.
 - **You are personally responsible for what you send.** Every number below was measured
   on the hardware named; re-run before filing.
-- **Leave the Reviewers list empty.** The triage squad assigns. Do not @-mention
-  maintainers.
+- **Reviewers:** leaving the field empty is this repository's submission plan; it is
+  not a quoted requirement from `CONTRIBUTING.md`.
 - Sign the **CLA** before the PR.
 
 **Environment for every claim below** (re-probe before filing; this container's GPU
@@ -241,16 +247,16 @@ from ordinary user code, no custom op and no `inference_mode`.** File this one f
 (`arange/mul/_unsafe_index`), which is a different code path from the
 `upsample_nearestnd` lowering in Issue B. Do not merge these two into one PR — see
 the one-concern-per-PR reasoning below. And any fix here must confront #164144/#165566 head-on:
-in the decomposition the scale is recomputed per element in a memory-bound gather,
-which is exactly the case that got gated. Expect to need a benchmark, and expect
-maintainers to prefer gating over a default change.
+in the decomposition the scale divide is loop-invariant in the emitted kernel. The
+remaining blocker is semantic: the native CUDA backward path is not always the
+transpose of its own forward map. Add the eager reproduction to #97135 before proposing
+code, and benchmark any coordinated change.
 
-Worth noting in that PR: in the *lowering* the same divide is loop-invariant (the
-divisor is a kernel argument, so it is hoisted — measured `div_rn/truediv` ≈ 1.02 at
-large shapes on A100, i.e. ~2%, and unresolvable at small ones), whereas in the
-decomposition `ks0 / 74` sits in the per-element index math. That asymmetry is the
-whole reason PR 1 can use `div_rn` at a couple of percent and Issue A's fix cannot
-assume the same.
+Worth noting in that PR: both paths expose a scalar shape divide, but they have
+different downstream contracts. The lowering hoists its kernel-argument divide
+(measured `div_rn/truediv` ≈ 1.02 at large shapes on A100); the decomposition's
+forward fix must also preserve the native CUDA backward contract, which currently
+fails the eager transpose check at sensitive ratios.
 
 ---
 
