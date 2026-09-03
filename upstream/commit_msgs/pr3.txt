@@ -1,0 +1,60 @@
+[inductor] Guard input_size in upsample_nearest2d_backward
+
+`upsample_nearest2d_backward` guards the grad tensor's spatial sizes but not
+`input_size`:
+
+    inp_h = V.graph.sizevars.guard_int(inp_h)
+    inp_w = V.graph.sizevars.guard_int(inp_w)
+    *_batch, out_h, out_w = input_size          # not guarded
+
+`out_h` / `out_w` are then used as divisors:
+
+    if inp_h % out_h == 0 and ...               # evaluated eagerly
+    h_kernel_max = ceildiv(inp_h, out_h)        # -> sympy FloorDiv if symbolic
+
+and `h_kernel_max` becomes a `range()` bound inside `_adaptive_pooling_fn`, so
+with a symbolic `input_size` lowering fails with:
+
+    TypeError: 'FloorDiv' object cannot be interpreted as an integer
+
+Guard them the same way the input sizes above are guarded.
+
+On why this guards where the forward `upsample_nearestnd` fix deliberately
+does not: there the quotient is a scalar multiplier, so it can be passed to
+the kernel as an argument and one kernel serves every output size (measured: 7
+distinct output sizes, 1 lowering invocation). Here the quotient is the
+`range()` bound the pooling window is unrolled over, so it is part of the
+kernel *body* -- a 2x2 window is 4 unrolled loads and an 8x8 window is 64,
+which are different kernels rather than one kernel with a different argument.
+There is nothing that could be deferred, so specializing here is not a
+tradeoff against a cheaper alternative; it is the only way to lower this at
+all.
+
+Not reachable from autograd today, though not for the reason one might assume:
+the forward is decomposed to arange/mul/_unsafe_index before autograd runs, so
+the backward graph contains `_unsafe_index_put` and
+`aten.upsample_nearest2d_backward` is never emitted at all. (The backward op
+itself is *not* in `torch._decomp.decomposition_table`.) Measured 0 hits on
+this lowering across 8 real autograd configurations -- nearest and
+nearest-exact, size= and scale_factor=, static and dynamic. The test therefore
+calls the aten op directly.
+
+Test fails before this change (TypeError, 4/4 shape pairs) and passes after,
+bit-exact with atol=rtol=0, on CPU and GPU, covering both the
+exactly-divisible path that routes to avg_pool2d and the general
+adaptive-pooling path. Real autograd backward is unaffected: 20/20 gradient
+comparisons through F.interpolate remain bit-identical for nearest and
+nearest-exact, size= and scale_factor=, static and dynamic.
+
+On the strict tolerance in that test: bit-exactness against eager is not
+universal for this op, so the shape pairs were chosen to stay inside the
+regime where it holds. Ratios that route to avg_pool2d with a large window
+disagree with eager in the last bits -- grad 64x64 -> input 8x8 differs on
+155/192 elements, max|d| 3.8e-06. That is summation-order noise rather than an
+index error: it appears identically with a static `input_size`, so it is
+independent of this change, and in float64 the same cases fall to max|d|
+~7e-15, scaling with machine epsilon. Neighbouring ratios with the same window
+are exact -- 64x64 -> 9x9 is also an 8x8 window and is bit-exact -- so the
+divergence tracks the avg_pool2d reassociation, not the window size.
+atol=rtol=0 is therefore meaningful here rather than incidental, but it is not
+a claim about the op in general.

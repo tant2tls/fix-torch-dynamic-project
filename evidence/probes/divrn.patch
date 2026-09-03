@@ -1,0 +1,44 @@
+diff --git a/torch/_inductor/lowering.py b/torch/_inductor/lowering.py
+index 1176127..b8e40d4 100644
+--- a/torch/_inductor/lowering.py
++++ b/torch/_inductor/lowering.py
+@@ -5345,7 +5345,16 @@ def upsample_nearestnd(
+         raise AssertionError("expected: len(scales_x) == n")
+     o_sizes = output_size
+ 
+-    inv_scales = [i / o for i, o in zip(i_sizes, o_sizes)]
++    # `ops.constant` requires a concrete value, so `i / o` can only be folded
++    # here when `o` is concrete. `i_sizes` is guarded above, but `o_sizes` is
++    # not, so under dynamic shapes `o` may still be symbolic; in that case defer
++    # the division to the kernel by keeping `o` and dividing in `scale_fn`.
++    # Guarding `o` instead would specialize on the output size, costing a
++    # recompile per distinct size.
++    inv_scales = [
++        o if isinstance(o, sympy.Expr) and not o.is_number else i / o
++        for i, o in zip(i_sizes, o_sizes)
++    ]
+     for i, scale in enumerate(scales_x):
+         if scale is not None:
+             inv_scales[i] = 1.0 / scale
+@@ -5357,7 +5366,20 @@ def upsample_nearestnd(
+         x = ops.index_expr(x, torch.float32)
+         if exact:
+             x = ops.add(x, ops.constant(0.5, torch.float32))
+-        x = ops.mul(x, ops.constant(scale, torch.float32))
++        if isinstance(scale, sympy.Expr):
++            # `scale` is the symbolic output size; divide at runtime. Eager
++            # computes the scale as a float32 division (`compute_scales_value`
++            # in ATen/native/UpSample.h), so use div_rn to get the same
++            # correctly-rounded result -- plain `/` lowers to Triton's
++            # approximate div.full, and being one ulp off changes the floored
++            # index below.
++            inv_scale = ops.div_rn(
++                ops.constant(size, torch.float32),
++                ops.index_expr(scale, torch.float32),
++            )
++        else:
++            inv_scale = ops.constant(scale, torch.float32)
++        x = ops.mul(x, inv_scale)
+         x = ops.to_dtype(x, torch.int32)
+         return ops.indirect_indexing(x, size, check=False)
+ 

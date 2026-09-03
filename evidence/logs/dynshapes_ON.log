@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/prwork/pytorch/test/inductor/test_torchinductor_dynamic_shapes.py", line 51, in <module>
+    from inductor.test_torchinductor import (  # @manual=fbcode//caffe2/test/inductor:test_inductor-library
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/prwork/pytorch/test/inductor/test_torchinductor.py", line 38, in <module>
+    from torch._C._dynamo.guards import (
+ImportError: cannot import name 'assert_size_stride_grouped' from 'torch._C._dynamo.guards' (unknown location)
+rc=0

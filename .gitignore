@@ -1,0 +1,30 @@
+# ---------------------------------------------------------------------------
+# DEVELOP PHASE — nothing here is hidden.
+#
+# Everything is tracked, including `origin/` (the production traceback and the
+# original brief) and `notebook/` (the lab record and superseded drafts). Those
+# contain internal paths and names, which is fine for internal work.
+#
+# The public cut happens LATER and is a separate step — see PUBLISH.md for what
+# has to be excluded or rewritten at that point. Do not pre-emptively hide
+# things here; it made the working copy harder to navigate than the leak was
+# worth.
+# ---------------------------------------------------------------------------
+
+# Byte-compiled
+__pycache__/
+*.py[cod]
+
+# Virtualenvs
+.venv/
+venv/
+env/
+
+# torch.compile / Inductor artifacts
+torch_compile_debug/
+*.orig
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store

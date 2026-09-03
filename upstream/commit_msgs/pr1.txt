@@ -1,0 +1,72 @@
+[inductor] Fix symbolic output_size in upsample_nearestnd
+
+`upsample_nearestnd` guards its input sizes but not its output sizes, then
+divides one by the other and passes the quotient to `ops.constant`, which
+requires a concrete value:
+
+    i_sizes = [V.graph.sizevars.guard_int(i) for i in i_sizes]
+    o_sizes = output_size
+    inv_scales = [i / o for i, o in zip(i_sizes, o_sizes)]
+    ...
+    x = ops.mul(x, ops.constant(scale, torch.float32))
+
+Reached with a symbolic output size and no explicit `scales_x` entry -- i.e.
+the caller passed `size=` rather than `scale_factor=` -- the quotient stays a
+`sympy.Mul` and lowering fails with:
+
+    NotImplementedError: argument of type: <class 'sympy.core.mul.Mul'>
+
+Keep `i / o` when `o` is concrete. When it is symbolic, mark the dim with
+`None` and defer the division to the kernel rather than guarding `o`. Guarding
+would specialize on the output size: sweeping 7 distinct output sizes through
+this lowering costs 1 invocation with the deferred divide and 7 with
+`V.graph.sizevars.guard_int(o)`, and past torch._dynamo.config.recompile_limit
+that drops the caller back to eager.
+
+`inv_scales` therefore holds `float | None`, and `scale_fn` takes the output
+size as a separate parameter. An earlier version of this patch instead stored
+the output size in `inv_scales` in place of the scale, which required the same
+"is this symbolic" predicate at two sites; a concrete `sympy.Integer` size
+satisfies `isinstance(o, sympy.Expr)` but must still be folded, so the two
+predicates drifting apart produced out-of-range indices rather than a crash.
+One sentinel, tested in one place, removes that failure mode.
+
+The runtime division uses `ops.div_rn`, not `ops.truediv`, for the same reason
+`_div_rn` is already used for floating-point floor division: Triton's default
+fp32 division lowers to an approximate reciprocal, which can land one ulp off
+and change the floored index. Eager computes this scale as a float32 division
+(`compute_scales_value` in ATen/native/UpSample.h) and then floors `dst_index
+* scale`. Modelling that exactly and sweeping 9 ratios (3305 output
+coordinates) on an A100, the approximate divide disagrees with eager on 45
+coordinates and div_rn on none.
+
+On the cost of that div_rn, given #164144 / #165566: here the divisor is the
+symbolic output size, i.e. a kernel argument uniform across the grid, so the
+divide is loop-invariant. The emitted Triton computes it from `ks0`/`ks1`
+only, never from `xindex`, so it is one scalar op per launch rather than one
+per element. Timing the same lowering with div_rn against truediv on an A100
+at four shapes from 1x3x64x64->128x128 to 4x128x256x256->512x512,
+div_rn/truediv is 0.96-0.98, i.e. no measurable cost. That is a different
+regime from the per-element elementwise division which regressed on B200; I
+have not measured this on B200.
+
+Not reachable through the ATen upsample ops today: `upsample_nearest{1,2,3}d`
+are in `torch._decomp.decomposition_table`, and Inductor applies those
+decompositions (arange/mul/_unsafe_index) before lowering, so this function is
+not reached. Measured 0 lowering hits across F.interpolate with size= (static
+and dynamic) and with scale_factor=, nn.Upsample, raw aten .default, raw aten
+.vec, inference_mode, and torch.export. The tests therefore drive the lowering
+through a custom op, as the neighbouring tests in test_custom_lowering.py do.
+
+Tests fail before this change and pass after, for `nearest` and
+`nearest-exact`, on CPU and GPU, including 448->192 and 384->363 where a
+one-ulp scale error changes the result, and a `sympy.Integer` output size to
+pin the concrete-but-symbolic case. Verified no-op for existing callers:
+across 63 real F.interpolate/nn.Upsample configurations (size= and
+scale_factor=, 1-D/2-D/3-D, static and dynamic, forward and autograd
+backward), compiled results are bit-identical with and without this patch.
+
+Each test varies its custom op's name across loop iterations. The `exact` flag
+lives in the registered lowering, not in the traced graph, so two iterations
+differing only by `exact` hash to the same FX graph cache key and the second
+would otherwise reuse the first's kernel.

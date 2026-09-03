@@ -1,0 +1,14 @@
+# The bug and the fix are specific to this version: torch >= 2.4 rewrote
+# torch/_inductor/index_propagation.py, and the defect is not present there.
+#
+# On a CUDA box, install the build matching your driver instead, e.g.:
+#   pip install torch==2.3.1 --index-url https://download.pytorch.org/whl/cu121
+#
+# sympy arrives as a torch dependency; it is listed only because the failure
+# surfaces inside it and the version is part of the reproduction record.
+torch==2.3.1
+sympy==1.14.0
+
+# Optional. tests/run_tests.py falls back to a bundled shim when pytest is
+# absent, so the suite runs with torch alone.
+# pytest>=7.0

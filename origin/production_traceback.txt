@@ -1,0 +1,712 @@
+File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/lowering.py", line 3528, in <listcomp>
+    [*b, *[scale_fn(i, s, size) for i, s, size in zip(x, inv_scales, i_sizes)]]
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/lowering.py", line 3520, in scale_fn
+    x = ops.mul(x, ops.constant(scale, torch.float32))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/virtualized.py", line 261, in inner
+    return OpsWrapper._wrap(getattr(_ops, name)(*new_args, **new_kwargs))
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/index_propagation.py", line 262, in inner
+    return self.propagate_sympy(name, args, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/index_propagation.py", line 238, in propagate_sympy
+    new_expr = getattr(SymPyOps, name)(*new_args, **new_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/index_propagation.py", line 62, in constant
+    expr = sympy.Float(float(value))
+                       ^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/sympy/core/expr.py", line 375, in __float__
+    raise TypeError("Cannot convert expression to float")
+torch._dynamo.exc.BackendCompilerFailed: backend='inductor' raised:
+TypeError: Cannot convert expression to float
+
+Set TORCH_LOGS="+dynamo" and TORCHDYNAMO_VERBOSE=1 for more information
+
+  0%|                                                                                                                                                                                                                                                        | 0/8 [02:19<?, ?it/s]
+Error processing request: backend='inductor' raised:
+TypeError: Cannot convert expression to float
+
+Set TORCH_LOGS="+dynamo" and TORCHDYNAMO_VERBOSE=1 for more information
+
+  0%|                                                                                                                                                                                                                                                        | 0/8 [02:15<?, ?it/s]
+INFO:     127.0.0.1:36908 - "POST /text-to-image HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/uvicorn/protocols/http/h11_impl.py", line 407, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/uvicorn/middleware/proxy_headers.py", line 69, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/applications.py", line 123, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/middleware/base.py", line 189, in __call__
+    with collapse_excgroups():
+  File "/prj/corp/airesearch/lasvegas/vol11-scratch/tanngo/miniconda3/envs/longlive/lib/python3.11/contextlib.py", line 158, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/_utils.py", line 93, in collapse_excgroups
+    raise exc
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/middleware/base.py", line 191, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/worker_server.py", line 47, in queue_middleware
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/middleware/base.py", line 165, in call_next
+    raise app_exc
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/middleware/base.py", line 151, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/prometheus_fastapi_instrumentator/middleware.py", line 169, in __call__
+    raise exc
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/prometheus_fastapi_instrumentator/middleware.py", line 167, in __call__
+    await self.app(scope, receive, send_wrapper)
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/routing.py", line 758, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/routing.py", line 778, in app
+    await route.handle(scope, receive, send)
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/routing.py", line 299, in handle
+    await self.app(scope, receive, send)
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/routing.py", line 79, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/routing.py", line 74, in app
+    response = await func(request)
+               ^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/fastapi/routing.py", line 278, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/fastapi/routing.py", line 191, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/worker_server.py", line 71, in text_to_image
+    return inference.text_to_image_infer(request_data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/inference.py", line 40, in text_to_image_infer
+    image = (workflow.text_to_image if size in NORMAL_SIZES
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/workflows/dreamshaper.py", line 117, in text_to_image
+    sampler_Latent = self.ksampler.sample(
+                     ^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/ComfyUI/nodes.py", line 1382, in sample
+    return common_ksampler(model, seed, steps, cfg, sampler_name, scheduler, positive, negative, latent_image, denoise=denoise)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/ComfyUI/nodes.py", line 1352, in common_ksampler
+    samples = comfy.sample.sample(model, noise, steps, cfg, sampler_name, scheduler, positive, negative, latent_image,
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/ComfyUI/comfy/sample.py", line 43, in sample
+    samples = sampler.sample(noise, positive, negative, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, sigmas=sigmas, callback=callback, disable_pbar=disable_pbar, seed=seed)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/ComfyUI/comfy/samplers.py", line 829, in sample
+    return sample(self.model, noise, positive, negative, cfg, self.device, sampler, sigmas, self.model_options, latent_image=latent_image, denoise_mask=denoise_mask, callback=callback, disable_pbar=disable_pbar, seed=seed)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/ComfyUI/comfy/samplers.py", line 729, in sample
+    return cfg_guider.sample(noise, latent_image, sampler, sigmas, denoise_mask, callback, disable_pbar, seed)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/ComfyUI/comfy/samplers.py", line 716, in sample
+    output = self.inner_sample(noise, latent_image, device, sampler, sigmas, denoise_mask, callback, disable_pbar, seed)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/ComfyUI/comfy/samplers.py", line 695, in inner_sample
+    samples = sampler.sample(self, sigmas, extra_args, callback, noise, latent_image, denoise_mask, disable_pbar)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/ComfyUI/comfy/samplers.py", line 600, in sample
+    samples = self.sampler_function(model_k, noise, sigmas, extra_args=extra_args, callback=k_callback, disable=disable_pbar, **self.extra_options)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/ComfyUI/comfy/k_diffusion/sampling.py", line 741, in sample_dpmpp_sde_gpu
+    return sample_dpmpp_sde(model, x, sigmas, extra_args=extra_args, callback=callback, disable=disable, eta=eta, s_noise=s_noise, noise_sampler=noise_sampler, r=r)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/ComfyUI/comfy/k_diffusion/sampling.py", line 559, in sample_dpmpp_sde
+    denoised = model(x, sigmas[i] * s_in, **extra_args)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/ComfyUI/comfy/samplers.py", line 299, in __call__
+    out = self.inner_model(x, sigma, model_options=model_options, seed=seed)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/ComfyUI/comfy/samplers.py", line 682, in __call__
+    return self.predict_noise(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/ComfyUI/comfy/samplers.py", line 685, in predict_noise
+    return sampling_function(self.inner_model, x, timestep, self.conds.get("negative", None), self.conds.get("positive", None), self.cfg, model_options=model_options, seed=seed)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/ComfyUI/comfy/samplers.py", line 279, in sampling_function
+    out = calc_cond_batch(model, conds, x, timestep, model_options)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/ComfyUI/comfy/samplers.py", line 228, in calc_cond_batch
+    output = model.apply_model(input_x, timestep_, **c).chunk(batch_chunks)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/ComfyUI/comfy/model_base.py", line 123, in apply_model
+    model_output = self.diffusion_model(xc, t, context=context, control=control, transformer_options=transformer_options, **extra_conds).float()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/workflows/distrifusion.py", line 75, in forward
+    output = self.original_forward(x, timesteps, context, y, control, transformer_options, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/eval_frame.py", line 451, in _fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/convert_frame.py", line 921, in catch_errors
+    return callback(frame, cache_entry, hooks, frame_state, skip=1)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/convert_frame.py", line 400, in _convert_frame_assert
+    return _compile(
+           ^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol11-scratch/tanngo/miniconda3/envs/longlive/lib/python3.11/contextlib.py", line 81, in inner
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/convert_frame.py", line 676, in _compile
+    guarded_code = compile_inner(code, one_graph, hooks, transform)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/utils.py", line 262, in time_wrapper
+    r = func(*args, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/convert_frame.py", line 535, in compile_inner
+    out_code = transform_code_object(code, transform)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/bytecode_transformation.py", line 1036, in transform_code_object
+    transformations(instructions, code_options)
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/convert_frame.py", line 165, in _fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/convert_frame.py", line 500, in transform
+    tracer.run()
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/symbolic_convert.py", line 2149, in run
+    super().run()
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/symbolic_convert.py", line 810, in run
+    and self.step()
+        ^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/symbolic_convert.py", line 773, in step
+    getattr(self, inst.opname)(inst)
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/symbolic_convert.py", line 2268, in RETURN_VALUE
+    self.output.compile_subgraph(
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/output_graph.py", line 1001, in compile_subgraph
+    self.compile_and_call_fx_graph(tx, pass2.graph_output_vars(), root)
+  File "/prj/corp/airesearch/lasvegas/vol11-scratch/tanngo/miniconda3/envs/longlive/lib/python3.11/contextlib.py", line 81, in inner
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/output_graph.py", line 1178, in compile_and_call_fx_graph
+    compiled_fn = self.call_user_compiler(gm)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/utils.py", line 262, in time_wrapper
+    r = func(*args, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/output_graph.py", line 1251, in call_user_compiler
+    raise BackendCompilerFailed(self.compiler_fn, e).with_traceback(
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/output_graph.py", line 1232, in call_user_compiler
+    compiled_fn = compiler_fn(gm, self.example_inputs())
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/repro/after_dynamo.py", line 117, in debug_wrapper
+    compiled_gm = compiler_fn(gm, example_inputs)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/repro/after_dynamo.py", line 117, in debug_wrapper
+    compiled_gm = compiler_fn(gm, example_inputs)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/__init__.py", line 1731, in __call__
+    return compile_fx(model_, inputs_, config_patches=self.config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol11-scratch/tanngo/miniconda3/envs/longlive/lib/python3.11/contextlib.py", line 81, in inner
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/compile_fx.py", line 1102, in compile_fx
+    return compile_fx(
+           ^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol11-scratch/tanngo/miniconda3/envs/longlive/lib/python3.11/contextlib.py", line 81, in inner
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/compile_fx.py", line 1330, in compile_fx
+    return aot_autograd(
+           ^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/backends/common.py", line 58, in compiler_fn
+    cg = aot_module_simplified(gm, example_inputs, **kwargs)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_functorch/aot_autograd.py", line 903, in aot_module_simplified
+    compiled_fn = create_aot_dispatcher_function(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/utils.py", line 262, in time_wrapper
+    r = func(*args, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_functorch/aot_autograd.py", line 628, in create_aot_dispatcher_function
+    compiled_fn = compiler_fn(flat_fn, fake_flat_args, aot_config, fw_metadata=fw_metadata)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_functorch/_aot_autograd/runtime_wrappers.py", line 443, in aot_wrapper_dedupe
+    return compiler_fn(flat_fn, leaf_flat_args, aot_config, fw_metadata=fw_metadata)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_functorch/_aot_autograd/runtime_wrappers.py", line 648, in aot_wrapper_synthetic_base
+    return compiler_fn(flat_fn, flat_args, aot_config, fw_metadata=fw_metadata)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_functorch/_aot_autograd/jit_compile_runtime_wrappers.py", line 119, in aot_dispatch_base
+    compiled_fw = compiler(fw_module, updated_flat_args)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/utils.py", line 262, in time_wrapper
+    r = func(*args, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/compile_fx.py", line 1257, in fw_compiler_base
+    return inner_compile(
+           ^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol11-scratch/tanngo/miniconda3/envs/longlive/lib/python3.11/contextlib.py", line 81, in inner
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/repro/after_aot.py", line 83, in debug_wrapper
+    inner_compiled_fn = compiler_fn(gm, example_inputs)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/debug.py", line 304, in inner
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol11-scratch/tanngo/miniconda3/envs/longlive/lib/python3.11/contextlib.py", line 81, in inner
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol11-scratch/tanngo/miniconda3/envs/longlive/lib/python3.11/contextlib.py", line 81, in inner
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/utils.py", line 262, in time_wrapper
+    r = func(*args, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/compile_fx.py", line 438, in compile_fx_inner
+    compiled_graph = fx_codegen_and_compile(
+                     ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/compile_fx.py", line 714, in fx_codegen_and_compile
+    compiled_fn = graph.compile_to_fn()
+                  ^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/graph.py", line 1307, in compile_to_fn
+    return self.compile_to_module().call
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/utils.py", line 262, in time_wrapper
+    r = func(*args, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/graph.py", line 1250, in compile_to_module
+    self.codegen_with_cpp_wrapper() if self.cpp_wrapper else self.codegen()
+                                                             ^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/graph.py", line 1205, in codegen
+    self.scheduler = Scheduler(self.buffers)
+                     ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/utils.py", line 262, in time_wrapper
+    r = func(*args, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/scheduler.py", line 1267, in __init__
+    self.nodes = [self.create_scheduler_node(n) for n in nodes]
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/scheduler.py", line 1267, in <listcomp>
+    self.nodes = [self.create_scheduler_node(n) for n in nodes]
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/scheduler.py", line 1358, in create_scheduler_node
+    return SchedulerNode(self, node)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/scheduler.py", line 687, in __init__
+    self._compute_attrs()
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/scheduler.py", line 694, in _compute_attrs
+    self._sizes, self._body = self.node.simplify_and_reorder(
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/ir.py", line 3247, in simplify_and_reorder
+    ) = self.get_default_sizes_body()
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/ir.py", line 3204, in get_default_sizes_body
+    body = LoopBody(
+           ^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/ir.py", line 7048, in __init__
+    self.root_block = LoopBodyBlock(self, fn, args)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/ir.py", line 7265, in __init__
+    ops.output(fn(*args))
+               ^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/ir.py", line 490, in store_output
+    return ops.store(output_name, indexer(vars), loader(vars))
+                                                 ^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/lowering.py", line 3528, in fn
+    [*b, *[scale_fn(i, s, size) for i, s, size in zip(x, inv_scales, i_sizes)]]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/lowering.py", line 3528, in <listcomp>
+    [*b, *[scale_fn(i, s, size) for i, s, size in zip(x, inv_scales, i_sizes)]]
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/lowering.py", line 3520, in scale_fn
+    x = ops.mul(x, ops.constant(scale, torch.float32))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/virtualized.py", line 261, in inner
+    return OpsWrapper._wrap(getattr(_ops, name)(*new_args, **new_kwargs))
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/index_propagation.py", line 262, in inner
+    return self.propagate_sympy(name, args, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/index_propagation.py", line 238, in propagate_sympy
+    new_expr = getattr(SymPyOps, name)(*new_args, **new_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/index_propagation.py", line 62, in constant
+    expr = sympy.Float(float(value))
+                       ^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/sympy/core/expr.py", line 375, in __float__
+    raise TypeError("Cannot convert expression to float")
+torch._dynamo.exc.BackendCompilerFailed: backend='inductor' raised:
+TypeError: Cannot convert expression to float
+
+Set TORCH_LOGS="+dynamo" and TORCHDYNAMO_VERBOSE=1 for more information
+
+  0%|                                                                                                                                                                                                                                                        | 0/8 [02:28<?, ?it/s]
+Error processing request: backend='inductor' raised:
+TypeError: Cannot convert expression to float
+
+Set TORCH_LOGS="+dynamo" and TORCHDYNAMO_VERBOSE=1 for more information
+
+  0%|                                                                                                                                                                                                                                                        | 0/8 [00:00<?, ?it/s]/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torchsde/_brownian/brownian_interval.py:608: UserWarning: Should have tb<=t1 but got tb=14.614644050598145 and t1=14.614643.
+  warnings.warn(f"Should have {tb_name}<=t1 but got {tb_name}={tb} and t1={self._end}.")
+/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torchsde/_brownian/brownian_interval.py:608: UserWarning: Should have tb<=t1 but got tb=14.614644050598145 and t1=14.614643.
+  warnings.warn(f"Should have {tb_name}<=t1 but got {tb_name}={tb} and t1={self._end}.")
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 8/8 [00:00<00:00, 27.26it/s]
+
+Endpoint: /text-to-image, Method: POST, Process Time: 161.6390 seconds
+INFO:     127.0.0.1:40852 - "POST /text-to-image HTTP/1.1" 200 OK
+  0%|                                                                                                                                                                                                                                                        | 0/8 [02:06<?, ?it/s]
+INFO:     127.0.0.1:56538 - "POST /text-to-image HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/uvicorn/protocols/http/h11_impl.py", line 407, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/uvicorn/middleware/proxy_headers.py", line 69, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/applications.py", line 123, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/middleware/base.py", line 189, in __call__
+    with collapse_excgroups():
+  File "/prj/corp/airesearch/lasvegas/vol11-scratch/tanngo/miniconda3/envs/longlive/lib/python3.11/contextlib.py", line 158, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/_utils.py", line 93, in collapse_excgroups
+    raise exc
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/middleware/base.py", line 191, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/worker_server.py", line 47, in queue_middleware
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/middleware/base.py", line 165, in call_next
+    raise app_exc
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/middleware/base.py", line 151, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/prometheus_fastapi_instrumentator/middleware.py", line 169, in __call__
+    raise exc
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/prometheus_fastapi_instrumentator/middleware.py", line 167, in __call__
+    await self.app(scope, receive, send_wrapper)
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/routing.py", line 758, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/routing.py", line 778, in app
+    await route.handle(scope, receive, send)
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/routing.py", line 299, in handle
+    await self.app(scope, receive, send)
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/routing.py", line 79, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/starlette/routing.py", line 74, in app
+    response = await func(request)
+               ^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/fastapi/routing.py", line 278, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/fastapi/routing.py", line 191, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/worker_server.py", line 71, in text_to_image
+    return inference.text_to_image_infer(request_data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/inference.py", line 40, in text_to_image_infer
+    image = (workflow.text_to_image if size in NORMAL_SIZES
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/workflows/dreamshaper.py", line 117, in text_to_image
+    sampler_Latent = self.ksampler.sample(
+                     ^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/ComfyUI/nodes.py", line 1382, in sample
+    return common_ksampler(model, seed, steps, cfg, sampler_name, scheduler, positive, negative, latent_image, denoise=denoise)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/ComfyUI/nodes.py", line 1352, in common_ksampler
+    samples = comfy.sample.sample(model, noise, steps, cfg, sampler_name, scheduler, positive, negative, latent_image,
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/ComfyUI/comfy/sample.py", line 43, in sample
+    samples = sampler.sample(noise, positive, negative, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, sigmas=sigmas, callback=callback, disable_pbar=disable_pbar, seed=seed)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/ComfyUI/comfy/samplers.py", line 829, in sample
+    return sample(self.model, noise, positive, negative, cfg, self.device, sampler, sigmas, self.model_options, latent_image=latent_image, denoise_mask=denoise_mask, callback=callback, disable_pbar=disable_pbar, seed=seed)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/ComfyUI/comfy/samplers.py", line 729, in sample
+    return cfg_guider.sample(noise, latent_image, sampler, sigmas, denoise_mask, callback, disable_pbar, seed)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/ComfyUI/comfy/samplers.py", line 716, in sample
+    output = self.inner_sample(noise, latent_image, device, sampler, sigmas, denoise_mask, callback, disable_pbar, seed)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/ComfyUI/comfy/samplers.py", line 695, in inner_sample
+    samples = sampler.sample(self, sigmas, extra_args, callback, noise, latent_image, denoise_mask, disable_pbar)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/ComfyUI/comfy/samplers.py", line 600, in sample
+    samples = self.sampler_function(model_k, noise, sigmas, extra_args=extra_args, callback=k_callback, disable=disable_pbar, **self.extra_options)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/ComfyUI/comfy/k_diffusion/sampling.py", line 741, in sample_dpmpp_sde_gpu
+    return sample_dpmpp_sde(model, x, sigmas, extra_args=extra_args, callback=callback, disable=disable, eta=eta, s_noise=s_noise, noise_sampler=noise_sampler, r=r)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/ComfyUI/comfy/k_diffusion/sampling.py", line 559, in sample_dpmpp_sde
+    denoised = model(x, sigmas[i] * s_in, **extra_args)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/ComfyUI/comfy/samplers.py", line 299, in __call__
+    out = self.inner_model(x, sigma, model_options=model_options, seed=seed)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/ComfyUI/comfy/samplers.py", line 682, in __call__
+    return self.predict_noise(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/ComfyUI/comfy/samplers.py", line 685, in predict_noise
+    return sampling_function(self.inner_model, x, timestep, self.conds.get("negative", None), self.conds.get("positive", None), self.cfg, model_options=model_options, seed=seed)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/ComfyUI/comfy/samplers.py", line 279, in sampling_function
+    out = calc_cond_batch(model, conds, x, timestep, model_options)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/ComfyUI/comfy/samplers.py", line 228, in calc_cond_batch
+    output = model.apply_model(input_x, timestep_, **c).chunk(batch_chunks)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/ComfyUI/comfy/model_base.py", line 123, in apply_model
+    model_output = self.diffusion_model(xc, t, context=context, control=control, transformer_options=transformer_options, **extra_conds).float()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/workflows/distrifusion.py", line 75, in forward
+    output = self.original_forward(x, timesteps, context, y, control, transformer_options, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/eval_frame.py", line 451, in _fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/convert_frame.py", line 921, in catch_errors
+    return callback(frame, cache_entry, hooks, frame_state, skip=1)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/convert_frame.py", line 400, in _convert_frame_assert
+    return _compile(
+           ^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol11-scratch/tanngo/miniconda3/envs/longlive/lib/python3.11/contextlib.py", line 81, in inner
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/convert_frame.py", line 676, in _compile
+    guarded_code = compile_inner(code, one_graph, hooks, transform)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/utils.py", line 262, in time_wrapper
+    r = func(*args, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/convert_frame.py", line 535, in compile_inner
+    out_code = transform_code_object(code, transform)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/bytecode_transformation.py", line 1036, in transform_code_object
+    transformations(instructions, code_options)
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/convert_frame.py", line 165, in _fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/convert_frame.py", line 500, in transform
+    tracer.run()
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/symbolic_convert.py", line 2149, in run
+    super().run()
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/symbolic_convert.py", line 810, in run
+    and self.step()
+        ^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/symbolic_convert.py", line 773, in step
+    getattr(self, inst.opname)(inst)
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/symbolic_convert.py", line 2268, in RETURN_VALUE
+    self.output.compile_subgraph(
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/output_graph.py", line 1001, in compile_subgraph
+    self.compile_and_call_fx_graph(tx, pass2.graph_output_vars(), root)
+  File "/prj/corp/airesearch/lasvegas/vol11-scratch/tanngo/miniconda3/envs/longlive/lib/python3.11/contextlib.py", line 81, in inner
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/output_graph.py", line 1178, in compile_and_call_fx_graph
+    compiled_fn = self.call_user_compiler(gm)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/utils.py", line 262, in time_wrapper
+    r = func(*args, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/output_graph.py", line 1251, in call_user_compiler
+    raise BackendCompilerFailed(self.compiler_fn, e).with_traceback(
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/output_graph.py", line 1232, in call_user_compiler
+    compiled_fn = compiler_fn(gm, self.example_inputs())
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/repro/after_dynamo.py", line 117, in debug_wrapper
+    compiled_gm = compiler_fn(gm, example_inputs)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/repro/after_dynamo.py", line 117, in debug_wrapper
+    compiled_gm = compiler_fn(gm, example_inputs)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/__init__.py", line 1731, in __call__
+    return compile_fx(model_, inputs_, config_patches=self.config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol11-scratch/tanngo/miniconda3/envs/longlive/lib/python3.11/contextlib.py", line 81, in inner
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/compile_fx.py", line 1102, in compile_fx
+    return compile_fx(
+           ^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol11-scratch/tanngo/miniconda3/envs/longlive/lib/python3.11/contextlib.py", line 81, in inner
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/compile_fx.py", line 1330, in compile_fx
+    return aot_autograd(
+           ^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/backends/common.py", line 58, in compiler_fn
+    cg = aot_module_simplified(gm, example_inputs, **kwargs)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_functorch/aot_autograd.py", line 903, in aot_module_simplified
+    compiled_fn = create_aot_dispatcher_function(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/utils.py", line 262, in time_wrapper
+    r = func(*args, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_functorch/aot_autograd.py", line 628, in create_aot_dispatcher_function
+    compiled_fn = compiler_fn(flat_fn, fake_flat_args, aot_config, fw_metadata=fw_metadata)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_functorch/_aot_autograd/runtime_wrappers.py", line 443, in aot_wrapper_dedupe
+    return compiler_fn(flat_fn, leaf_flat_args, aot_config, fw_metadata=fw_metadata)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_functorch/_aot_autograd/runtime_wrappers.py", line 648, in aot_wrapper_synthetic_base
+    return compiler_fn(flat_fn, flat_args, aot_config, fw_metadata=fw_metadata)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_functorch/_aot_autograd/jit_compile_runtime_wrappers.py", line 119, in aot_dispatch_base
+    compiled_fw = compiler(fw_module, updated_flat_args)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/utils.py", line 262, in time_wrapper
+    r = func(*args, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/compile_fx.py", line 1257, in fw_compiler_base
+    return inner_compile(
+           ^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol11-scratch/tanngo/miniconda3/envs/longlive/lib/python3.11/contextlib.py", line 81, in inner
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/repro/after_aot.py", line 83, in debug_wrapper
+    inner_compiled_fn = compiler_fn(gm, example_inputs)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/debug.py", line 304, in inner
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol11-scratch/tanngo/miniconda3/envs/longlive/lib/python3.11/contextlib.py", line 81, in inner
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol11-scratch/tanngo/miniconda3/envs/longlive/lib/python3.11/contextlib.py", line 81, in inner
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/utils.py", line 262, in time_wrapper
+    r = func(*args, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/compile_fx.py", line 438, in compile_fx_inner
+    compiled_graph = fx_codegen_and_compile(
+                     ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/compile_fx.py", line 714, in fx_codegen_and_compile
+    compiled_fn = graph.compile_to_fn()
+                  ^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/graph.py", line 1307, in compile_to_fn
+    return self.compile_to_module().call
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/utils.py", line 262, in time_wrapper
+    r = func(*args, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/graph.py", line 1250, in compile_to_module
+    self.codegen_with_cpp_wrapper() if self.cpp_wrapper else self.codegen()
+                                                             ^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/graph.py", line 1205, in codegen
+    self.scheduler = Scheduler(self.buffers)
+                     ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_dynamo/utils.py", line 262, in time_wrapper
+    r = func(*args, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/scheduler.py", line 1267, in __init__
+    self.nodes = [self.create_scheduler_node(n) for n in nodes]
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/scheduler.py", line 1267, in <listcomp>
+    self.nodes = [self.create_scheduler_node(n) for n in nodes]
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/scheduler.py", line 1358, in create_scheduler_node
+    return SchedulerNode(self, node)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/scheduler.py", line 687, in __init__
+    self._compute_attrs()
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/scheduler.py", line 694, in _compute_attrs
+    self._sizes, self._body = self.node.simplify_and_reorder(
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/ir.py", line 3247, in simplify_and_reorder
+    ) = self.get_default_sizes_body()
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/ir.py", line 3204, in get_default_sizes_body
+    body = LoopBody(
+           ^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/ir.py", line 7048, in __init__
+    self.root_block = LoopBodyBlock(self, fn, args)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/ir.py", line 7265, in __init__
+    ops.output(fn(*args))
+               ^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/ir.py", line 490, in store_output
+    return ops.store(output_name, indexer(vars), loader(vars))
+                                                 ^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/lowering.py", line 3528, in fn
+    [*b, *[scale_fn(i, s, size) for i, s, size in zip(x, inv_scales, i_sizes)]]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/lowering.py", line 3528, in <listcomp>
+    [*b, *[scale_fn(i, s, size) for i, s, size in zip(x, inv_scales, i_sizes)]]
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/lowering.py", line 3520, in scale_fn
+    x = ops.mul(x, ops.constant(scale, torch.float32))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/virtualized.py", line 261, in inner
+    return OpsWrapper._wrap(getattr(_ops, name)(*new_args, **new_kwargs))
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/index_propagation.py", line 262, in inner
+    return self.propagate_sympy(name, args, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/index_propagation.py", line 238, in propagate_sympy
+    new_expr = getattr(SymPyOps, name)(*new_args, **new_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/torch/_inductor/index_propagation.py", line 62, in constant
+    expr = sympy.Float(float(value))
+                       ^^^^^^^^^^^^
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/optimizer-image/genai-sd-optimization/venv_image_server_onediff/lib/python3.11/site-packages/sympy/core/expr.py", line 375, in __float__
+    raise TypeError("Cannot convert expression to float")
+torch._dynamo.exc.BackendCompilerFailed: backend='inductor' raised:
+TypeError: Cannot convert expression to float
+
+Set TORCH_LOGS="+dynamo" and TORCHDYNAMO_VERBOSE=1 for more information

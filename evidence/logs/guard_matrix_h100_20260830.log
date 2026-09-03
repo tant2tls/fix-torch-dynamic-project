@@ -1,0 +1,30 @@
+############ state matrix: does each test guard its fix? ############
+
+--- baseline: all three PRs ON (expect every test OK) ---
+  forward test                                   OK
+  concrete-sympy test                            OK
+  one-graph test                                 OK
+  constant-reject                                OK
+  constant-accept                                OK
+  backward test                                  OK
+
+--- PR1 OFF (forward fix reverted) -> forward/sympy/one-graph must FAIL ---
+  forward test        (expect FAILED)            FAILED (errors=1)
+  concrete-sympy test (expect OK)                OK
+  one-graph test      (expect FAILED)            FAILED (errors=1)
+  backward test       (expect OK)                OK
+
+--- PR2 OFF (ops.constant check reverted) -> reject must FAIL ---
+  constant-reject     (expect FAILED)            FAILED (failures=1)
+  constant-accept     (expect OK)                OK
+  forward test        (expect OK)                OK
+
+--- PR3 OFF (backward guard reverted) -> backward must FAIL ---
+  backward test       (expect FAILED)            FAILED (errors=1)
+  forward test        (expect OK)                OK
+
+--- restore: all ON ---
+pr1 = on
+pr2 = on
+pr3 = on
+torch dir: /prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/prwork/envcu130/lib/python3.12/site-packages/torch

@@ -1,0 +1,243 @@
+s..................../tmp/envpinned/lib/python3.12/site-packages/torch/_inductor/lowering.py:2633: UserWarning: Torchinductor does not support code generation for complex operators. Performance may be worse than eager.
+  warnings.warn(
+../tmp/t213/test/inductor/test_torchinductor.py:1662: UserWarning: ComplexHalf support is experimental and many operators don't support it yet. (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/EmptyTensor.cpp:54.)
+  x = torch.tensor(
+....................sss.....W0826 21:36:43.164000 34415 torch/_export/__init__.py:71] +============================+
+W0826 21:36:43.165000 34415 torch/_export/__init__.py:72] |     !!!   WARNING   !!!    |
+W0826 21:36:43.165000 34415 torch/_export/__init__.py:73] +============================+
+W0826 21:36:43.165000 34415 torch/_export/__init__.py:74] torch._export.aot_compile()/torch._export.aot_load() is being deprecated, please switch to directly calling torch._inductor.aoti_compile_and_package(torch.export.export())/torch._inductor.aoti_load_package() instead.
+/usr2/tanngo/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/copyreg.py:99: FutureWarning: `isinstance(treespec, LeafSpec)` is deprecated, use `isinstance(treespec, TreeSpec) and treespec.is_leaf()` instead.
+  return cls.__new__(cls, *args)
+./usr2/tanngo/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/copyreg.py:99: FutureWarning: `isinstance(treespec, LeafSpec)` is deprecated, use `isinstance(treespec, TreeSpec) and treespec.is_leaf()` instead.
+  return cls.__new__(cls, *args)
+./usr2/tanngo/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/copyreg.py:99: FutureWarning: `isinstance(treespec, LeafSpec)` is deprecated, use `isinstance(treespec, TreeSpec) and treespec.is_leaf()` instead.
+  return cls.__new__(cls, *args)
+/usr2/tanngo/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/copyreg.py:99: FutureWarning: `isinstance(treespec, LeafSpec)` is deprecated, use `isinstance(treespec, TreeSpec) and treespec.is_leaf()` instead.
+  return cls.__new__(cls, *args)
+/usr2/tanngo/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/copyreg.py:99: FutureWarning: `isinstance(treespec, LeafSpec)` is deprecated, use `isinstance(treespec, TreeSpec) and treespec.is_leaf()` instead.
+  return cls.__new__(cls, *args)
+/usr2/tanngo/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/copyreg.py:99: FutureWarning: `isinstance(treespec, LeafSpec)` is deprecated, use `isinstance(treespec, TreeSpec) and treespec.is_leaf()` instead.
+  return cls.__new__(cls, *args)
+./usr2/tanngo/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/copyreg.py:99: FutureWarning: `isinstance(treespec, LeafSpec)` is deprecated, use `isinstance(treespec, TreeSpec) and treespec.is_leaf()` instead.
+  return cls.__new__(cls, *args)
+./usr2/tanngo/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/copyreg.py:99: FutureWarning: `isinstance(treespec, LeafSpec)` is deprecated, use `isinstance(treespec, TreeSpec) and treespec.is_leaf()` instead.
+  return cls.__new__(cls, *args)
+/usr2/tanngo/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/copyreg.py:99: FutureWarning: `isinstance(treespec, LeafSpec)` is deprecated, use `isinstance(treespec, TreeSpec) and treespec.is_leaf()` instead.
+  return cls.__new__(cls, *args)
+./usr2/tanngo/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/copyreg.py:99: FutureWarning: `isinstance(treespec, LeafSpec)` is deprecated, use `isinstance(treespec, TreeSpec) and treespec.is_leaf()` instead.
+  return cls.__new__(cls, *args)
+./usr2/tanngo/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/copyreg.py:99: FutureWarning: `isinstance(treespec, LeafSpec)` is deprecated, use `isinstance(treespec, TreeSpec) and treespec.is_leaf()` instead.
+  return cls.__new__(cls, *args)
+/usr2/tanngo/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/copyreg.py:99: FutureWarning: `isinstance(treespec, LeafSpec)` is deprecated, use `isinstance(treespec, TreeSpec) and treespec.is_leaf()` instead.
+  return cls.__new__(cls, *args)
+/usr2/tanngo/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/copyreg.py:99: FutureWarning: `isinstance(treespec, LeafSpec)` is deprecated, use `isinstance(treespec, TreeSpec) and treespec.is_leaf()` instead.
+  return cls.__new__(cls, *args)
+/usr2/tanngo/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/copyreg.py:99: FutureWarning: `isinstance(treespec, LeafSpec)` is deprecated, use `isinstance(treespec, TreeSpec) and treespec.is_leaf()` instead.
+  return cls.__new__(cls, *args)
+/usr2/tanngo/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/copyreg.py:99: FutureWarning: `isinstance(treespec, LeafSpec)` is deprecated, use `isinstance(treespec, TreeSpec) and treespec.is_leaf()` instead.
+  return cls.__new__(cls, *args)
+........................................E0826 21:40:59.934000 34415 torch/_subclasses/fake_tensor.py:3090] [0/0] failed while attempting to run meta for aten.avg_pool2d.default
+E0826 21:40:59.934000 34415 torch/_subclasses/fake_tensor.py:3090] [0/0] Traceback (most recent call last):
+E0826 21:40:59.934000 34415 torch/_subclasses/fake_tensor.py:3090] [0/0]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_subclasses/fake_tensor.py", line 3086, in _dispatch_impl
+E0826 21:40:59.934000 34415 torch/_subclasses/fake_tensor.py:3090] [0/0]     r = func(*args, **kwargs)
+E0826 21:40:59.934000 34415 torch/_subclasses/fake_tensor.py:3090] [0/0]         ^^^^^^^^^^^^^^^^^^^^^
+E0826 21:40:59.934000 34415 torch/_subclasses/fake_tensor.py:3090] [0/0]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_ops.py", line 875, in __call__
+E0826 21:40:59.934000 34415 torch/_subclasses/fake_tensor.py:3090] [0/0]     return self._op(*args, **kwargs)
+E0826 21:40:59.934000 34415 torch/_subclasses/fake_tensor.py:3090] [0/0]            ^^^^^^^^^^^^^^^^^^^^^^^^^
+E0826 21:40:59.934000 34415 torch/_subclasses/fake_tensor.py:3090] [0/0]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_meta_registrations.py", line 3149, in meta_avg_pool2d
+E0826 21:40:59.934000 34415 torch/_subclasses/fake_tensor.py:3090] [0/0]     torch._check(
+E0826 21:40:59.934000 34415 torch/_subclasses/fake_tensor.py:3090] [0/0]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/__init__.py", line 1768, in _check
+E0826 21:40:59.934000 34415 torch/_subclasses/fake_tensor.py:3090] [0/0]     _check_with(RuntimeError, cond, message)  # pyrefly: ignore [bad-argument-type]
+E0826 21:40:59.934000 34415 torch/_subclasses/fake_tensor.py:3090] [0/0]     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E0826 21:40:59.934000 34415 torch/_subclasses/fake_tensor.py:3090] [0/0]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/__init__.py", line 1750, in _check_with
+E0826 21:40:59.934000 34415 torch/_subclasses/fake_tensor.py:3090] [0/0]     raise error_type(message_evaluated)
+E0826 21:40:59.934000 34415 torch/_subclasses/fake_tensor.py:3090] [0/0] RuntimeError: "avg_pool2d" not implemented for 'torch.uint8'
+E0826 21:40:59.974000 34415 torch/_subclasses/fake_tensor.py:3090] [0/1] failed while attempting to run meta for aten.avg_pool2d.default
+E0826 21:40:59.974000 34415 torch/_subclasses/fake_tensor.py:3090] [0/1] Traceback (most recent call last):
+E0826 21:40:59.974000 34415 torch/_subclasses/fake_tensor.py:3090] [0/1]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_subclasses/fake_tensor.py", line 3086, in _dispatch_impl
+E0826 21:40:59.974000 34415 torch/_subclasses/fake_tensor.py:3090] [0/1]     r = func(*args, **kwargs)
+E0826 21:40:59.974000 34415 torch/_subclasses/fake_tensor.py:3090] [0/1]         ^^^^^^^^^^^^^^^^^^^^^
+E0826 21:40:59.974000 34415 torch/_subclasses/fake_tensor.py:3090] [0/1]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_ops.py", line 875, in __call__
+E0826 21:40:59.974000 34415 torch/_subclasses/fake_tensor.py:3090] [0/1]     return self._op(*args, **kwargs)
+E0826 21:40:59.974000 34415 torch/_subclasses/fake_tensor.py:3090] [0/1]            ^^^^^^^^^^^^^^^^^^^^^^^^^
+E0826 21:40:59.974000 34415 torch/_subclasses/fake_tensor.py:3090] [0/1]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_meta_registrations.py", line 3149, in meta_avg_pool2d
+E0826 21:40:59.974000 34415 torch/_subclasses/fake_tensor.py:3090] [0/1]     torch._check(
+E0826 21:40:59.974000 34415 torch/_subclasses/fake_tensor.py:3090] [0/1]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/__init__.py", line 1768, in _check
+E0826 21:40:59.974000 34415 torch/_subclasses/fake_tensor.py:3090] [0/1]     _check_with(RuntimeError, cond, message)  # pyrefly: ignore [bad-argument-type]
+E0826 21:40:59.974000 34415 torch/_subclasses/fake_tensor.py:3090] [0/1]     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E0826 21:40:59.974000 34415 torch/_subclasses/fake_tensor.py:3090] [0/1]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/__init__.py", line 1750, in _check_with
+E0826 21:40:59.974000 34415 torch/_subclasses/fake_tensor.py:3090] [0/1]     raise error_type(message_evaluated)
+E0826 21:40:59.974000 34415 torch/_subclasses/fake_tensor.py:3090] [0/1] RuntimeError: "avg_pool2d" not implemented for 'torch.uint16'
+E0826 21:41:00.013000 34415 torch/_subclasses/fake_tensor.py:3090] [0/2] failed while attempting to run meta for aten.avg_pool2d.default
+E0826 21:41:00.013000 34415 torch/_subclasses/fake_tensor.py:3090] [0/2] Traceback (most recent call last):
+E0826 21:41:00.013000 34415 torch/_subclasses/fake_tensor.py:3090] [0/2]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_subclasses/fake_tensor.py", line 3086, in _dispatch_impl
+E0826 21:41:00.013000 34415 torch/_subclasses/fake_tensor.py:3090] [0/2]     r = func(*args, **kwargs)
+E0826 21:41:00.013000 34415 torch/_subclasses/fake_tensor.py:3090] [0/2]         ^^^^^^^^^^^^^^^^^^^^^
+E0826 21:41:00.013000 34415 torch/_subclasses/fake_tensor.py:3090] [0/2]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_ops.py", line 875, in __call__
+E0826 21:41:00.013000 34415 torch/_subclasses/fake_tensor.py:3090] [0/2]     return self._op(*args, **kwargs)
+E0826 21:41:00.013000 34415 torch/_subclasses/fake_tensor.py:3090] [0/2]            ^^^^^^^^^^^^^^^^^^^^^^^^^
+E0826 21:41:00.013000 34415 torch/_subclasses/fake_tensor.py:3090] [0/2]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_meta_registrations.py", line 3149, in meta_avg_pool2d
+E0826 21:41:00.013000 34415 torch/_subclasses/fake_tensor.py:3090] [0/2]     torch._check(
+E0826 21:41:00.013000 34415 torch/_subclasses/fake_tensor.py:3090] [0/2]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/__init__.py", line 1768, in _check
+E0826 21:41:00.013000 34415 torch/_subclasses/fake_tensor.py:3090] [0/2]     _check_with(RuntimeError, cond, message)  # pyrefly: ignore [bad-argument-type]
+E0826 21:41:00.013000 34415 torch/_subclasses/fake_tensor.py:3090] [0/2]     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E0826 21:41:00.013000 34415 torch/_subclasses/fake_tensor.py:3090] [0/2]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/__init__.py", line 1750, in _check_with
+E0826 21:41:00.013000 34415 torch/_subclasses/fake_tensor.py:3090] [0/2]     raise error_type(message_evaluated)
+E0826 21:41:00.013000 34415 torch/_subclasses/fake_tensor.py:3090] [0/2] RuntimeError: "avg_pool2d" not implemented for 'torch.uint32'
+E0826 21:41:00.050000 34415 torch/_subclasses/fake_tensor.py:3090] [0/3] failed while attempting to run meta for aten.avg_pool2d.default
+E0826 21:41:00.050000 34415 torch/_subclasses/fake_tensor.py:3090] [0/3] Traceback (most recent call last):
+E0826 21:41:00.050000 34415 torch/_subclasses/fake_tensor.py:3090] [0/3]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_subclasses/fake_tensor.py", line 3086, in _dispatch_impl
+E0826 21:41:00.050000 34415 torch/_subclasses/fake_tensor.py:3090] [0/3]     r = func(*args, **kwargs)
+E0826 21:41:00.050000 34415 torch/_subclasses/fake_tensor.py:3090] [0/3]         ^^^^^^^^^^^^^^^^^^^^^
+E0826 21:41:00.050000 34415 torch/_subclasses/fake_tensor.py:3090] [0/3]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_ops.py", line 875, in __call__
+E0826 21:41:00.050000 34415 torch/_subclasses/fake_tensor.py:3090] [0/3]     return self._op(*args, **kwargs)
+E0826 21:41:00.050000 34415 torch/_subclasses/fake_tensor.py:3090] [0/3]            ^^^^^^^^^^^^^^^^^^^^^^^^^
+E0826 21:41:00.050000 34415 torch/_subclasses/fake_tensor.py:3090] [0/3]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_meta_registrations.py", line 3149, in meta_avg_pool2d
+E0826 21:41:00.050000 34415 torch/_subclasses/fake_tensor.py:3090] [0/3]     torch._check(
+E0826 21:41:00.050000 34415 torch/_subclasses/fake_tensor.py:3090] [0/3]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/__init__.py", line 1768, in _check
+E0826 21:41:00.050000 34415 torch/_subclasses/fake_tensor.py:3090] [0/3]     _check_with(RuntimeError, cond, message)  # pyrefly: ignore [bad-argument-type]
+E0826 21:41:00.050000 34415 torch/_subclasses/fake_tensor.py:3090] [0/3]     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E0826 21:41:00.050000 34415 torch/_subclasses/fake_tensor.py:3090] [0/3]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/__init__.py", line 1750, in _check_with
+E0826 21:41:00.050000 34415 torch/_subclasses/fake_tensor.py:3090] [0/3]     raise error_type(message_evaluated)
+E0826 21:41:00.050000 34415 torch/_subclasses/fake_tensor.py:3090] [0/3] RuntimeError: "avg_pool2d" not implemented for 'torch.uint64'
+E0826 21:41:00.089000 34415 torch/_subclasses/fake_tensor.py:3090] [0/4] failed while attempting to run meta for aten.avg_pool2d.default
+E0826 21:41:00.089000 34415 torch/_subclasses/fake_tensor.py:3090] [0/4] Traceback (most recent call last):
+E0826 21:41:00.089000 34415 torch/_subclasses/fake_tensor.py:3090] [0/4]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_subclasses/fake_tensor.py", line 3086, in _dispatch_impl
+E0826 21:41:00.089000 34415 torch/_subclasses/fake_tensor.py:3090] [0/4]     r = func(*args, **kwargs)
+E0826 21:41:00.089000 34415 torch/_subclasses/fake_tensor.py:3090] [0/4]         ^^^^^^^^^^^^^^^^^^^^^
+E0826 21:41:00.089000 34415 torch/_subclasses/fake_tensor.py:3090] [0/4]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_ops.py", line 875, in __call__
+E0826 21:41:00.089000 34415 torch/_subclasses/fake_tensor.py:3090] [0/4]     return self._op(*args, **kwargs)
+E0826 21:41:00.089000 34415 torch/_subclasses/fake_tensor.py:3090] [0/4]            ^^^^^^^^^^^^^^^^^^^^^^^^^
+E0826 21:41:00.089000 34415 torch/_subclasses/fake_tensor.py:3090] [0/4]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_meta_registrations.py", line 3149, in meta_avg_pool2d
+E0826 21:41:00.089000 34415 torch/_subclasses/fake_tensor.py:3090] [0/4]     torch._check(
+E0826 21:41:00.089000 34415 torch/_subclasses/fake_tensor.py:3090] [0/4]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/__init__.py", line 1768, in _check
+E0826 21:41:00.089000 34415 torch/_subclasses/fake_tensor.py:3090] [0/4]     _check_with(RuntimeError, cond, message)  # pyrefly: ignore [bad-argument-type]
+E0826 21:41:00.089000 34415 torch/_subclasses/fake_tensor.py:3090] [0/4]     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E0826 21:41:00.089000 34415 torch/_subclasses/fake_tensor.py:3090] [0/4]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/__init__.py", line 1750, in _check_with
+E0826 21:41:00.089000 34415 torch/_subclasses/fake_tensor.py:3090] [0/4]     raise error_type(message_evaluated)
+E0826 21:41:00.089000 34415 torch/_subclasses/fake_tensor.py:3090] [0/4] RuntimeError: "avg_pool2d" not implemented for 'torch.uint8'
+E0826 21:41:00.115000 34415 torch/_subclasses/fake_tensor.py:3090] [0/5] failed while attempting to run meta for aten.avg_pool2d.default
+E0826 21:41:00.115000 34415 torch/_subclasses/fake_tensor.py:3090] [0/5] Traceback (most recent call last):
+E0826 21:41:00.115000 34415 torch/_subclasses/fake_tensor.py:3090] [0/5]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_subclasses/fake_tensor.py", line 3086, in _dispatch_impl
+E0826 21:41:00.115000 34415 torch/_subclasses/fake_tensor.py:3090] [0/5]     r = func(*args, **kwargs)
+E0826 21:41:00.115000 34415 torch/_subclasses/fake_tensor.py:3090] [0/5]         ^^^^^^^^^^^^^^^^^^^^^
+E0826 21:41:00.115000 34415 torch/_subclasses/fake_tensor.py:3090] [0/5]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_ops.py", line 875, in __call__
+E0826 21:41:00.115000 34415 torch/_subclasses/fake_tensor.py:3090] [0/5]     return self._op(*args, **kwargs)
+E0826 21:41:00.115000 34415 torch/_subclasses/fake_tensor.py:3090] [0/5]            ^^^^^^^^^^^^^^^^^^^^^^^^^
+E0826 21:41:00.115000 34415 torch/_subclasses/fake_tensor.py:3090] [0/5]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_meta_registrations.py", line 3149, in meta_avg_pool2d
+E0826 21:41:00.115000 34415 torch/_subclasses/fake_tensor.py:3090] [0/5]     torch._check(
+E0826 21:41:00.115000 34415 torch/_subclasses/fake_tensor.py:3090] [0/5]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/__init__.py", line 1768, in _check
+E0826 21:41:00.115000 34415 torch/_subclasses/fake_tensor.py:3090] [0/5]     _check_with(RuntimeError, cond, message)  # pyrefly: ignore [bad-argument-type]
+E0826 21:41:00.115000 34415 torch/_subclasses/fake_tensor.py:3090] [0/5]     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E0826 21:41:00.115000 34415 torch/_subclasses/fake_tensor.py:3090] [0/5]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/__init__.py", line 1750, in _check_with
+E0826 21:41:00.115000 34415 torch/_subclasses/fake_tensor.py:3090] [0/5]     raise error_type(message_evaluated)
+E0826 21:41:00.115000 34415 torch/_subclasses/fake_tensor.py:3090] [0/5] RuntimeError: "avg_pool2d" not implemented for 'torch.uint16'
+E0826 21:41:00.147000 34415 torch/_subclasses/fake_tensor.py:3090] [0/6] failed while attempting to run meta for aten.avg_pool2d.default
+E0826 21:41:00.147000 34415 torch/_subclasses/fake_tensor.py:3090] [0/6] Traceback (most recent call last):
+E0826 21:41:00.147000 34415 torch/_subclasses/fake_tensor.py:3090] [0/6]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_subclasses/fake_tensor.py", line 3086, in _dispatch_impl
+E0826 21:41:00.147000 34415 torch/_subclasses/fake_tensor.py:3090] [0/6]     r = func(*args, **kwargs)
+E0826 21:41:00.147000 34415 torch/_subclasses/fake_tensor.py:3090] [0/6]         ^^^^^^^^^^^^^^^^^^^^^
+E0826 21:41:00.147000 34415 torch/_subclasses/fake_tensor.py:3090] [0/6]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_ops.py", line 875, in __call__
+E0826 21:41:00.147000 34415 torch/_subclasses/fake_tensor.py:3090] [0/6]     return self._op(*args, **kwargs)
+E0826 21:41:00.147000 34415 torch/_subclasses/fake_tensor.py:3090] [0/6]            ^^^^^^^^^^^^^^^^^^^^^^^^^
+E0826 21:41:00.147000 34415 torch/_subclasses/fake_tensor.py:3090] [0/6]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_meta_registrations.py", line 3149, in meta_avg_pool2d
+E0826 21:41:00.147000 34415 torch/_subclasses/fake_tensor.py:3090] [0/6]     torch._check(
+E0826 21:41:00.147000 34415 torch/_subclasses/fake_tensor.py:3090] [0/6]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/__init__.py", line 1768, in _check
+E0826 21:41:00.147000 34415 torch/_subclasses/fake_tensor.py:3090] [0/6]     _check_with(RuntimeError, cond, message)  # pyrefly: ignore [bad-argument-type]
+E0826 21:41:00.147000 34415 torch/_subclasses/fake_tensor.py:3090] [0/6]     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E0826 21:41:00.147000 34415 torch/_subclasses/fake_tensor.py:3090] [0/6]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/__init__.py", line 1750, in _check_with
+E0826 21:41:00.147000 34415 torch/_subclasses/fake_tensor.py:3090] [0/6]     raise error_type(message_evaluated)
+E0826 21:41:00.147000 34415 torch/_subclasses/fake_tensor.py:3090] [0/6] RuntimeError: "avg_pool2d" not implemented for 'torch.uint32'
+E0826 21:41:00.173000 34415 torch/_subclasses/fake_tensor.py:3090] [0/7] failed while attempting to run meta for aten.avg_pool2d.default
+E0826 21:41:00.173000 34415 torch/_subclasses/fake_tensor.py:3090] [0/7] Traceback (most recent call last):
+E0826 21:41:00.173000 34415 torch/_subclasses/fake_tensor.py:3090] [0/7]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_subclasses/fake_tensor.py", line 3086, in _dispatch_impl
+E0826 21:41:00.173000 34415 torch/_subclasses/fake_tensor.py:3090] [0/7]     r = func(*args, **kwargs)
+E0826 21:41:00.173000 34415 torch/_subclasses/fake_tensor.py:3090] [0/7]         ^^^^^^^^^^^^^^^^^^^^^
+E0826 21:41:00.173000 34415 torch/_subclasses/fake_tensor.py:3090] [0/7]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_ops.py", line 875, in __call__
+E0826 21:41:00.173000 34415 torch/_subclasses/fake_tensor.py:3090] [0/7]     return self._op(*args, **kwargs)
+E0826 21:41:00.173000 34415 torch/_subclasses/fake_tensor.py:3090] [0/7]            ^^^^^^^^^^^^^^^^^^^^^^^^^
+E0826 21:41:00.173000 34415 torch/_subclasses/fake_tensor.py:3090] [0/7]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_meta_registrations.py", line 3149, in meta_avg_pool2d
+E0826 21:41:00.173000 34415 torch/_subclasses/fake_tensor.py:3090] [0/7]     torch._check(
+E0826 21:41:00.173000 34415 torch/_subclasses/fake_tensor.py:3090] [0/7]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/__init__.py", line 1768, in _check
+E0826 21:41:00.173000 34415 torch/_subclasses/fake_tensor.py:3090] [0/7]     _check_with(RuntimeError, cond, message)  # pyrefly: ignore [bad-argument-type]
+E0826 21:41:00.173000 34415 torch/_subclasses/fake_tensor.py:3090] [0/7]     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E0826 21:41:00.173000 34415 torch/_subclasses/fake_tensor.py:3090] [0/7]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/__init__.py", line 1750, in _check_with
+E0826 21:41:00.173000 34415 torch/_subclasses/fake_tensor.py:3090] [0/7]     raise error_type(message_evaluated)
+E0826 21:41:00.173000 34415 torch/_subclasses/fake_tensor.py:3090] [0/7] RuntimeError: "avg_pool2d" not implemented for 'torch.uint64'
+E0826 21:41:00.211000 34415 torch/_subclasses/fake_tensor.py:3090] [0/8] failed while attempting to run meta for aten.avg_pool3d.default
+E0826 21:41:00.211000 34415 torch/_subclasses/fake_tensor.py:3090] [0/8] Traceback (most recent call last):
+E0826 21:41:00.211000 34415 torch/_subclasses/fake_tensor.py:3090] [0/8]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_subclasses/fake_tensor.py", line 3086, in _dispatch_impl
+E0826 21:41:00.211000 34415 torch/_subclasses/fake_tensor.py:3090] [0/8]     r = func(*args, **kwargs)
+E0826 21:41:00.211000 34415 torch/_subclasses/fake_tensor.py:3090] [0/8]         ^^^^^^^^^^^^^^^^^^^^^
+E0826 21:41:00.211000 34415 torch/_subclasses/fake_tensor.py:3090] [0/8]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_ops.py", line 875, in __call__
+E0826 21:41:00.211000 34415 torch/_subclasses/fake_tensor.py:3090] [0/8]     return self._op(*args, **kwargs)
+E0826 21:41:00.211000 34415 torch/_subclasses/fake_tensor.py:3090] [0/8]            ^^^^^^^^^^^^^^^^^^^^^^^^^
+E0826 21:41:00.211000 34415 torch/_subclasses/fake_tensor.py:3090] [0/8]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_prims_common/wrappers.py", line 313, in _fn
+E0826 21:41:00.211000 34415 torch/_subclasses/fake_tensor.py:3090] [0/8]     result = fn(*args, **kwargs)
+E0826 21:41:00.211000 34415 torch/_subclasses/fake_tensor.py:3090] [0/8]              ^^^^^^^^^^^^^^^^^^^
+E0826 21:41:00.211000 34415 torch/_subclasses/fake_tensor.py:3090] [0/8]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_meta_registrations.py", line 3347, in meta_avg_pool3d
+E0826 21:41:00.211000 34415 torch/_subclasses/fake_tensor.py:3090] [0/8]     torch._check(
+E0826 21:41:00.211000 34415 torch/_subclasses/fake_tensor.py:3090] [0/8]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/__init__.py", line 1768, in _check
+E0826 21:41:00.211000 34415 torch/_subclasses/fake_tensor.py:3090] [0/8]     _check_with(RuntimeError, cond, message)  # pyrefly: ignore [bad-argument-type]
+E0826 21:41:00.211000 34415 torch/_subclasses/fake_tensor.py:3090] [0/8]     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E0826 21:41:00.211000 34415 torch/_subclasses/fake_tensor.py:3090] [0/8]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/__init__.py", line 1750, in _check_with
+E0826 21:41:00.211000 34415 torch/_subclasses/fake_tensor.py:3090] [0/8]     raise error_type(message_evaluated)
+E0826 21:41:00.211000 34415 torch/_subclasses/fake_tensor.py:3090] [0/8] RuntimeError: "avg_pool3d" not implemented for 'torch.uint8'
+E0826 21:41:00.240000 34415 torch/_subclasses/fake_tensor.py:3090] [0/9] failed while attempting to run meta for aten.avg_pool3d.default
+E0826 21:41:00.240000 34415 torch/_subclasses/fake_tensor.py:3090] [0/9] Traceback (most recent call last):
+E0826 21:41:00.240000 34415 torch/_subclasses/fake_tensor.py:3090] [0/9]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_subclasses/fake_tensor.py", line 3086, in _dispatch_impl
+E0826 21:41:00.240000 34415 torch/_subclasses/fake_tensor.py:3090] [0/9]     r = func(*args, **kwargs)
+E0826 21:41:00.240000 34415 torch/_subclasses/fake_tensor.py:3090] [0/9]         ^^^^^^^^^^^^^^^^^^^^^
+E0826 21:41:00.240000 34415 torch/_subclasses/fake_tensor.py:3090] [0/9]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_ops.py", line 875, in __call__
+E0826 21:41:00.240000 34415 torch/_subclasses/fake_tensor.py:3090] [0/9]     return self._op(*args, **kwargs)
+E0826 21:41:00.240000 34415 torch/_subclasses/fake_tensor.py:3090] [0/9]            ^^^^^^^^^^^^^^^^^^^^^^^^^
+E0826 21:41:00.240000 34415 torch/_subclasses/fake_tensor.py:3090] [0/9]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_prims_common/wrappers.py", line 313, in _fn
+E0826 21:41:00.240000 34415 torch/_subclasses/fake_tensor.py:3090] [0/9]     result = fn(*args, **kwargs)
+E0826 21:41:00.240000 34415 torch/_subclasses/fake_tensor.py:3090] [0/9]              ^^^^^^^^^^^^^^^^^^^
+E0826 21:41:00.240000 34415 torch/_subclasses/fake_tensor.py:3090] [0/9]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_meta_registrations.py", line 3347, in meta_avg_pool3d
+E0826 21:41:00.240000 34415 torch/_subclasses/fake_tensor.py:3090] [0/9]     torch._check(
+E0826 21:41:00.240000 34415 torch/_subclasses/fake_tensor.py:3090] [0/9]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/__init__.py", line 1768, in _check
+E0826 21:41:00.240000 34415 torch/_subclasses/fake_tensor.py:3090] [0/9]     _check_with(RuntimeError, cond, message)  # pyrefly: ignore [bad-argument-type]
+E0826 21:41:00.240000 34415 torch/_subclasses/fake_tensor.py:3090] [0/9]     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E0826 21:41:00.240000 34415 torch/_subclasses/fake_tensor.py:3090] [0/9]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/__init__.py", line 1750, in _check_with
+E0826 21:41:00.240000 34415 torch/_subclasses/fake_tensor.py:3090] [0/9]     raise error_type(message_evaluated)
+E0826 21:41:00.240000 34415 torch/_subclasses/fake_tensor.py:3090] [0/9] RuntimeError: "avg_pool3d" not implemented for 'torch.uint16'
+E0826 21:41:00.267000 34415 torch/_subclasses/fake_tensor.py:3090] [0/10] failed while attempting to run meta for aten.avg_pool3d.default
+E0826 21:41:00.267000 34415 torch/_subclasses/fake_tensor.py:3090] [0/10] Traceback (most recent call last):
+E0826 21:41:00.267000 34415 torch/_subclasses/fake_tensor.py:3090] [0/10]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_subclasses/fake_tensor.py", line 3086, in _dispatch_impl
+E0826 21:41:00.267000 34415 torch/_subclasses/fake_tensor.py:3090] [0/10]     r = func(*args, **kwargs)
+E0826 21:41:00.267000 34415 torch/_subclasses/fake_tensor.py:3090] [0/10]         ^^^^^^^^^^^^^^^^^^^^^
+E0826 21:41:00.267000 34415 torch/_subclasses/fake_tensor.py:3090] [0/10]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_ops.py", line 875, in __call__
+E0826 21:41:00.267000 34415 torch/_subclasses/fake_tensor.py:3090] [0/10]     return self._op(*args, **kwargs)
+E0826 21:41:00.267000 34415 torch/_subclasses/fake_tensor.py:3090] [0/10]            ^^^^^^^^^^^^^^^^^^^^^^^^^
+E0826 21:41:00.267000 34415 torch/_subclasses/fake_tensor.py:3090] [0/10]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_prims_common/wrappers.py", line 313, in _fn
+E0826 21:41:00.267000 34415 torch/_subclasses/fake_tensor.py:3090] [0/10]     result = fn(*args, **kwargs)
+E0826 21:41:00.267000 34415 torch/_subclasses/fake_tensor.py:3090] [0/10]              ^^^^^^^^^^^^^^^^^^^
+E0826 21:41:00.267000 34415 torch/_subclasses/fake_tensor.py:3090] [0/10]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_meta_registrations.py", line 3347, in meta_avg_pool3d
+E0826 21:41:00.267000 34415 torch/_subclasses/fake_tensor.py:3090] [0/10]     torch._check(
+E0826 21:41:00.267000 34415 torch/_subclasses/fake_tensor.py:3090] [0/10]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/__init__.py", line 1768, in _check
+E0826 21:41:00.267000 34415 torch/_subclasses/fake_tensor.py:3090] [0/10]     _check_with(RuntimeError, cond, message)  # pyrefly: ignore [bad-argument-type]
+E0826 21:41:00.267000 34415 torch/_subclasses/fake_tensor.py:3090] [0/10]     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E0826 21:41:00.267000 34415 torch/_subclasses/fake_tensor.py:3090] [0/10]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/__init__.py", line 1750, in _check_with
+E0826 21:41:00.267000 34415 torch/_subclasses/fake_tensor.py:3090] [0/10]     raise error_type(message_evaluated)
+E0826 21:41:00.267000 34415 torch/_subclasses/fake_tensor.py:3090] [0/10] RuntimeError: "avg_pool3d" not implemented for 'torch.uint32'
+E0826 21:41:00.295000 34415 torch/_subclasses/fake_tensor.py:3090] [0/11] failed while attempting to run meta for aten.avg_pool3d.default
+E0826 21:41:00.295000 34415 torch/_subclasses/fake_tensor.py:3090] [0/11] Traceback (most recent call last):
+E0826 21:41:00.295000 34415 torch/_subclasses/fake_tensor.py:3090] [0/11]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_subclasses/fake_tensor.py", line 3086, in _dispatch_impl
+E0826 21:41:00.295000 34415 torch/_subclasses/fake_tensor.py:3090] [0/11]     r = func(*args, **kwargs)
+E0826 21:41:00.295000 34415 torch/_subclasses/fake_tensor.py:3090] [0/11]         ^^^^^^^^^^^^^^^^^^^^^
+E0826 21:41:00.295000 34415 torch/_subclasses/fake_tensor.py:3090] [0/11]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_ops.py", line 875, in __call__
+E0826 21:41:00.295000 34415 torch/_subclasses/fake_tensor.py:3090] [0/11]     return self._op(*args, **kwargs)
+E0826 21:41:00.295000 34415 torch/_subclasses/fake_tensor.py:3090] [0/11]            ^^^^^^^^^^^^^^^^^^^^^^^^^
+E0826 21:41:00.295000 34415 torch/_subclasses/fake_tensor.py:3090] [0/11]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_prims_common/wrappers.py", line 313, in _fn
+E0826 21:41:00.295000 34415 torch/_subclasses/fake_tensor.py:3090] [0/11]     result = fn(*args, **kwargs)
+E0826 21:41:00.295000 34415 torch/_subclasses/fake_tensor.py:3090] [0/11]              ^^^^^^^^^^^^^^^^^^^
+E0826 21:41:00.295000 34415 torch/_subclasses/fake_tensor.py:3090] [0/11]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/_meta_registrations.py", line 3347, in meta_avg_pool3d
+E0826 21:41:00.295000 34415 torch/_subclasses/fake_tensor.py:3090] [0/11]     torch._check(
+E0826 21:41:00.295000 34415 torch/_subclasses/fake_tensor.py:3090] [0/11]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/__init__.py", line 1768, in _check
+E0826 21:41:00.295000 34415 torch/_subclasses/fake_tensor.py:3090] [0/11]     _check_with(RuntimeError, cond, message)  # pyrefly: ignore [bad-argument-type]
+E0826 21:41:00.295000 34415 torch/_subclasses/fake_tensor.py:3090] [0/11]     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E0826 21:41:00.295000 34415 torch/_subclasses/fake_tensor.py:3090] [0/11]   File "/tmp/envpinned/lib/python3.12/site-packages/torch/__init__.py", line 1750, in _check_with
+E0826 21:41:00.295000 34415 torch/_subclasses/fake_tensor.py:3090] [0/11]     raise error_type(message_evaluated)
+E0826 21:41:00.295000 34415 torch/_subclasses/fake_tensor.py:3090] [0/11] RuntimeError: "avg_pool3d" not implemented for 'torch.uint64'
+..s.............sss..s.s............................s............s..............................................................

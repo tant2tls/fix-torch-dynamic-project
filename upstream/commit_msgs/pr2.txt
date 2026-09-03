@@ -1,0 +1,61 @@
+[inductor] Reject symbolic values in ops.constant
+
+`ops.constant` takes a concrete leaf value. Nothing enforces that at the call,
+so a lowering that derives one from sizes it never made concrete gets no error
+at the mistake; the value flows on and dies while tracing, typically as
+
+    NotImplementedError: argument of type: <class 'sympy.core.mul.Mul'>
+
+raised by fx.proxy about a dozen frames below the lowering that actually broke
+the contract, naming neither the op nor the fix. Debugging it means reading
+the whole lowering to find which size was never guarded.
+
+The contract is already real and already enforced by hand -- six times in
+lowering.py, using two predicates that do not agree:
+
+    isinstance(value, sympy.Basic)                 # _add_with_alpha_fma,
+                                                   # tensor, _full, addcmul,
+                                                   # addcdiv
+    isinstance(x, sympy.Expr) and not x.is_number  # get_constant_or_index_expr
+                                                   # in var_mean_welford_
+
+They diverge on exactly the values that are sympy but concrete:
+
+    value                 sympy.Basic   Expr and not is_number
+    sympy.Integer(5)      True          False
+    sympy.Float(2.5)      True          False
+    sympy.Rational(1, 2)  True          False
+
+so the five `sympy.Basic` sites route a concrete `sympy.Integer` to
+`ops.index_expr` while var_mean's routes it to `ops.constant`. Both work
+today, because index_expr accepts concrete values too, but only one of the two
+expresses the actual contract, and a new call site has a five-in-six chance of
+copying the one that does not.
+
+This takes var_mean's predicate -- the narrower and correct one -- and
+enforces it in a single place, naming both ways out (make the inputs concrete
+with V.graph.sizevars.guard_int, which specializes on them; or keep them
+dynamic and pass them to ops.index_expr, which accepts symbolic expressions)
+so the error is actionable where it is raised.
+
+`is_number` is load-bearing rather than defensive. Instrumenting a 24-case
+compile workload (pointwise, reductions, norms, softmax, pooling, upsample,
+cat/cumsum/cast, matmul, static and dynamic) recorded 1157 ops.constant calls,
+of which 13 passed a sympy value -- all 13 concrete `sympy.Integer`, all from
+var_mean via layer_norm and mean/var. An isinstance-only check would have
+rejected all 13.
+
+Implemented as an explicit `OpsWrapper.constant` rather than a branch in
+`_default`, so no other op pays for the isinstance. The cost lands at lowering
+time, once per IR node, and never in the generated kernel: on that same
+workload, compile time with the check against without is 1.23 s vs 1.25 s,
+i.e. below noise.
+
+Not converting the six existing sites here -- they are correct as written, and
+each is a separate behavioural question. This only makes the contract
+checkable, so the next violation reports itself at the call instead of a dozen
+frames away.
+
+Tests: a symbolic value raises with a message naming both alternatives, and
+sympy.Integer/sympy.Float keep working through full_like, add(alpha=), and
+addcmul.

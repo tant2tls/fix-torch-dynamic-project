@@ -1,0 +1,41 @@
+diff --git a/torch/_inductor/virtualized.py b/torch/_inductor/virtualized.py
+index bfd155b..91d32c7 100644
+--- a/torch/_inductor/virtualized.py
++++ b/torch/_inductor/virtualized.py
+@@ -61,6 +61,8 @@ from contextlib import AbstractContextManager, contextmanager
+ from threading import local
+ from typing import Any, cast, Generic, TYPE_CHECKING, TypeVar
+ 
++import sympy
++
+ from torch.utils._ordered_set import OrderedSet
+ 
+ from .ops_handler import (  # noqa: F401
+@@ -361,6 +363,27 @@ class OpsWrapper(DefaultHandler):
+         new_kwargs = {k: OpsWrapper._unwrap(v) for k, v in kwargs.items()}
+         return OpsWrapper._wrap(getattr(_ops, name)(*new_args, **new_kwargs))
+ 
++    @staticmethod
++    # pyrefly: ignore [bad-override]
++    def constant(value: Any, dtype: torch.dtype) -> Any:
++        # `ops.constant` takes a concrete leaf value. A lowering that derives one
++        # from sizes it never made concrete can pass a symbolic expression here,
++        # which no backend can codegen; the failure then surfaces well downstream
++        # (e.g. "NotImplementedError: argument of type: <class
++        # 'sympy.core.mul.Mul'>" from fx.proxy while tracing) with nothing naming
++        # the op or the fix. Several lowerings already dispatch on this by hand,
++        # e.g. `_full` and the addcmul/addcdiv helpers in lowering.py.
++        if isinstance(value, sympy.Expr) and not value.is_number:
++            raise TypeError(
++                f"ops.constant() requires a concrete value, got the symbolic "
++                f"expression {value!r} (free symbols: "
++                f"{sorted(map(str, value.free_symbols))}). Either make its "
++                f"inputs concrete (e.g. V.graph.sizevars.guard_int), which "
++                f"specializes on them, or keep it dynamic and pass it to "
++                f"ops.index_expr(), which accepts symbolic expressions."
++            )
++        return OpsWrapper._wrap(_ops.constant(value, dtype))
++
+     @staticmethod
+     def _unwrap(x):
+         if isinstance(x, (list, tuple)):

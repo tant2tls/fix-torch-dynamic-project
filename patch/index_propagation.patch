@@ -1,0 +1,27 @@
+# The complete fix: one hunk, one try/except, in torch 2.3.1.
+#
+# Apply with patch/patch.py (recommended -- it locates the file via
+# torch.__file__ and backs it up), or manually:
+#
+#   cd "$(python -c 'import torch,pathlib;print(pathlib.Path(torch.__file__).parent.parent)')"
+#   patch -p1 < /path/to/patch/index_propagation.patch
+#
+--- a/torch/_inductor/index_propagation.py	(pristine torch 2.3.1)
++++ b/torch/_inductor/index_propagation.py	(patched)
+@@ -259,7 +259,15 @@
+             if not all(v.is_symbolic for v in var_arguments):
+                 return self.fallback(name, args, kwargs)
+ 
+-            return self.propagate_sympy(name, args, kwargs)
++            try:
++                return self.propagate_sympy(name, args, kwargs)
++            except Exception:
++                # A value that cannot be lowered as a float constant (e.g. a
++                # symbolic output size arriving from the upsample_nearestnd
++                # lowering) is treated as an index expression instead of
++                # aborting the whole compilation. Inductor then emits the
++                # symbolic index arithmetic it would have used anyway.
++                return self.propagate_sympy("index_expr", args, kwargs)
+ 
+         return inner
+ 

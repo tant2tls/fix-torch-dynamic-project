@@ -1,0 +1,18 @@
+diff --git a/torch/_inductor/lowering.py b/torch/_inductor/lowering.py
+index b8e40d4..3c62e87 100644
+--- a/torch/_inductor/lowering.py
++++ b/torch/_inductor/lowering.py
+@@ -6635,6 +6635,13 @@ def upsample_nearest2d_backward(
+ 
+     # pyrefly: ignore [not-iterable]
+     *_batch, out_h, out_w = input_size
++    # `h_kernel_max` / `w_kernel_max` below become `range()` bounds in
++    # `_adaptive_pooling_fn`, and `inp_h % out_h` is evaluated eagerly here, so
++    # these must be concrete. Guard them the same way the input sizes are
++    # guarded above; unlike the forward lowering there is no way to defer a
++    # Python loop bound to the kernel.
++    out_h = V.graph.sizevars.guard_int(out_h)
++    out_w = V.graph.sizevars.guard_int(out_w)
+ 
+     if inp_h % out_h == 0 and inp_w % out_w == 0:
+         return avg_pool2d(

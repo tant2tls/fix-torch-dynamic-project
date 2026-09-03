@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/PhD/fix_torch_compile/prwork/a100/test_torchinductor_dynamic_shapes.py", line 51, in <module>
+    from inductor.test_torchinductor import (  # @manual=fbcode//caffe2/test/inductor:test_inductor-library
+ModuleNotFoundError: No module named 'inductor'
+EXIT=0

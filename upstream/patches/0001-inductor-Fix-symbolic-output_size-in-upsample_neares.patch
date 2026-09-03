@@ -1,0 +1,345 @@
+From cee885e0166d0b5a484c6aabd7793f24142c8c4f Mon Sep 17 00:00:00 2001
+From: tant2tls <tanngo06022002@gmail.com>
+Date: Thu, 27 Aug 2026 03:33:57 +0000
+Subject: [PATCH 1/3] [inductor] Fix symbolic output_size in upsample_nearestnd
+
+`upsample_nearestnd` guards its input sizes but not its output sizes, then
+divides one by the other and passes the quotient to `ops.constant`, which
+requires a concrete value:
+
+    i_sizes = [V.graph.sizevars.guard_int(i) for i in i_sizes]
+    o_sizes = output_size
+    inv_scales = [i / o for i, o in zip(i_sizes, o_sizes)]
+    ...
+    x = ops.mul(x, ops.constant(scale, torch.float32))
+
+Reached with a symbolic output size and no explicit `scales_x` entry -- i.e.
+the caller passed `size=` rather than `scale_factor=` -- the quotient stays a
+`sympy.Mul` and lowering fails with:
+
+    NotImplementedError: argument of type: <class 'sympy.core.mul.Mul'>
+
+Keep `i / o` when `o` is concrete. When it is symbolic, mark the dim with
+`None` and defer the division to the kernel rather than guarding `o`. Guarding
+would specialize on the output size: sweeping 7 distinct output sizes through
+this lowering costs 1 invocation with the deferred divide and 7 with
+`V.graph.sizevars.guard_int(o)`, and past torch._dynamo.config.recompile_limit
+that drops the caller back to eager.
+
+`inv_scales` therefore holds `float | None`, and `scale_fn` takes the output
+size as a separate parameter. An earlier version of this patch instead stored
+the output size in `inv_scales` in place of the scale, which required the same
+"is this symbolic" predicate at two sites; a concrete `sympy.Integer` size
+satisfies `isinstance(o, sympy.Expr)` but must still be folded, so the two
+predicates drifting apart produced out-of-range indices rather than a crash.
+One sentinel, tested in one place, removes that failure mode.
+
+The runtime division uses `ops.div_rn`, not `ops.truediv`, for the same reason
+`_div_rn` is already used for floating-point floor division: Triton's default
+fp32 division lowers to an approximate reciprocal, which can land one ulp off
+and change the floored index. Eager computes this scale as a float32 division
+(`compute_scales_value` in ATen/native/UpSample.h) and then floors `dst_index
+* scale`. Modelling that exactly and sweeping 9 ratios (3305 output
+coordinates) on an A100, the approximate divide disagrees with eager on 45
+coordinates and div_rn on none.
+
+On the cost of that div_rn, given #164144 / #165566: here the divisor is the
+symbolic output size, i.e. a kernel argument uniform across the grid, so the
+divide is loop-invariant. The emitted Triton computes it from `ks0`/`ks1`
+only, never from `xindex`, so it is one scalar op per launch rather than one
+per element. Timing the same lowering with div_rn against truediv on an A100
+at four shapes from 1x3x64x64->128x128 to 4x128x256x256->512x512,
+div_rn/truediv is 0.96-0.98, i.e. no measurable cost. That is a different
+regime from the per-element elementwise division which regressed on B200; I
+have not measured this on B200.
+
+Not reachable through the ATen upsample ops today: `upsample_nearest{1,2,3}d`
+are in `torch._decomp.decomposition_table`, and Inductor applies those
+decompositions (arange/mul/_unsafe_index) before lowering, so this function is
+not reached. Measured 0 lowering hits across F.interpolate with size= (static
+and dynamic) and with scale_factor=, nn.Upsample, raw aten .default, raw aten
+.vec, inference_mode, and torch.export. The tests therefore drive the lowering
+through a custom op, as the neighbouring tests in test_custom_lowering.py do.
+
+Tests fail before this change and pass after, for `nearest` and
+`nearest-exact`, on CPU and GPU, including 448->192 and 384->363 where a
+one-ulp scale error changes the result, and a `sympy.Integer` output size to
+pin the concrete-but-symbolic case. Verified no-op for existing callers:
+across 63 real F.interpolate/nn.Upsample configurations (size= and
+scale_factor=, 1-D/2-D/3-D, static and dynamic, forward and autograd
+backward), compiled results are bit-identical with and without this patch.
+
+Each test varies its custom op's name across loop iterations. The `exact` flag
+lives in the registered lowering, not in the traced graph, so two iterations
+differing only by `exact` hash to the same FX graph cache key and the second
+would otherwise reuse the first's kernel.
+---
+ test/inductor/test_custom_lowering.py | 182 +++++++++++++++++++++++++-
+ torch/_inductor/lowering.py           |  34 ++++-
+ 2 files changed, 211 insertions(+), 5 deletions(-)
+
+diff --git a/test/inductor/test_custom_lowering.py b/test/inductor/test_custom_lowering.py
+index 27576336ed..da776d3920 100644
+--- a/test/inductor/test_custom_lowering.py
++++ b/test/inductor/test_custom_lowering.py
+@@ -3,10 +3,18 @@
+ from functools import partial
+ from unittest import skipIf
+ 
++import sympy
++
+ import torch
+ from torch._inductor import config
+ from torch._inductor.ir import Pointwise
+-from torch._inductor.lowering import make_fallback, make_pointwise, register_lowering
++from torch._inductor.lowering import (
++    lowerings,
++    make_fallback,
++    make_pointwise,
++    register_lowering,
++    upsample_nearestnd,
++)
+ from torch._inductor.test_case import TestCase as InductorTestCase
+ from torch._inductor.utils import run_and_get_code
+ from torch._inductor.virtualized import ops
+@@ -275,6 +283,178 @@ class TestCustomLowering(InductorTestCase):
+             torch.allclose(torch.compile(M())(torch.ones(3)), torch.ones(3) + 1)
+         )
+ 
++    def test_upsample_nearestnd_symbolic_output_size(self):
++        # `upsample_nearestnd` divides the (guarded) input sizes by the output
++        # sizes and passes the quotient to `ops.constant`, which requires a
++        # concrete value. With a symbolic output size and no explicit scale the
++        # quotient stayed symbolic and lowering raised
++        # "NotImplementedError: argument of type: <class 'sympy.core.mul.Mul'>".
++        #
++        # The ATen upsample ops are decomposed (arange/mul/_unsafe_index) before
++        # Inductor lowers them, so they never reach this lowering; drive it
++        # directly, as the tests above do.
++        for exact in (False, True):
++            mode = "nearest-exact" if exact else "nearest"
++            # `exact` is captured by the lowering, not visible in the graph, so
++            # the FX graph cache would key both iterations the same and the
++            # second would reuse the first's kernel. Vary the op name.
++            opname = f"ups2d_exact{int(exact)}"
++            with torch.library._scoped_library("test_ups_ops", "FRAGMENT") as lib:
++                lib.define(f"{opname}(Tensor x, SymInt h, SymInt w) -> Tensor")
++
++                def ref(x, h, w, mode=mode):
++                    return torch.nn.functional.interpolate(
++                        x, size=(int(h), int(w)), mode=mode
++                    )
++
++                lib.impl(
++                    opname,
++                    lambda x, h, w: x.new_empty((x.shape[0], x.shape[1], h, w)),
++                    "Meta",
++                )
++                lib.impl(opname, ref, "CPU")
++                if HAS_GPU:
++                    # Dispatch keys are capitalised; GPU_TYPE is the lowercase
++                    # device string used for tensor construction below.
++                    lib.impl(opname, ref, GPU_TYPE.upper())
++
++                op = getattr(torch.ops.test_ups_ops, opname)
++                register_lowering(op)(
++                    lambda x, h, w: upsample_nearestnd(
++                        x, [h, w], (None, None), n=2, exact=exact
++                    )
++                )
++
++                def fn(x, sizes, op=op):
++                    return op(x, sizes[0], sizes[1])
++
++                for device in ["cpu"] + ([GPU_TYPE] if HAS_GPU else []):
++                    # 448 -> 192 and 384 -> 363 are ratios where a scale that is
++                    # one ulp off changes the floored index, so they pin the
++                    # division to a correctly-rounded one (ops.div_rn).
++                    for in_hw, out_hw in [
++                        ((32, 32), (64, 64)),
++                        ((32, 32), (100, 70)),
++                        ((32, 32), (17, 17)),
++                        ((448, 448), (192, 192)),
++                        ((384, 384), (363, 363)),
++                    ]:
++                        torch._dynamo.reset()
++                        x = torch.randn(1, 3, *in_hw, device=device)
++                        ref_t = torch.randn(1, 3, *out_hw, device=device)
++                        torch._dynamo.maybe_mark_dynamic(ref_t, 2)
++                        torch._dynamo.maybe_mark_dynamic(ref_t, 3)
++                        self.assertEqual(
++                            ref(x, *out_hw),
++                            torch.compile(fn, dynamic=True)(x, ref_t.shape[-2:]),
++                            atol=0,
++                            rtol=0,
++                        )
++
++                torch._dynamo.reset()
++                lowerings.pop(op.default, None)
++                lowerings.pop(op, None)
++
++    def test_upsample_nearestnd_concrete_sympy_output_size(self):
++        # A concrete `sympy` output size (e.g. `sympy.Integer`, from a size a
++        # guard already specialized) is a `sympy.Expr` but is not deferred, so
++        # `scale_fn` must still fold it. Reading it as a deferred output size
++        # divides by an already-inverted scale, which does not crash -- it
++        # silently indexes far outside the input -- so pin it exactly.
++        for i, size_type in enumerate((int, sympy.Integer)):
++            # Both iterations build the same graph, so they must not share an op
++            # name or the second would hit the first's cached kernel and pass
++            # without ever lowering the sympy.Integer sizes.
++            opname = f"ups2d_t{i}"
++            with torch.library._scoped_library("test_ups_ops3", "FRAGMENT") as lib:
++                lib.define(f"{opname}(Tensor x) -> Tensor")
++
++                def ref(x):
++                    return torch.nn.functional.interpolate(
++                        x, size=(64, 64), mode="nearest"
++                    )
++
++                lib.impl(
++                    opname,
++                    lambda x: x.new_empty((x.shape[0], x.shape[1], 64, 64)),
++                    "Meta",
++                )
++                lib.impl(opname, ref, "CPU")
++                if HAS_GPU:
++                    lib.impl(opname, ref, GPU_TYPE.upper())
++
++                op = getattr(torch.ops.test_ups_ops3, opname)
++                register_lowering(op)(
++                    lambda x: upsample_nearestnd(
++                        x, [size_type(64), size_type(64)], (None, None), n=2
++                    )
++                )
++
++                for device in ["cpu"] + ([GPU_TYPE] if HAS_GPU else []):
++                    torch._dynamo.reset()
++                    x = torch.randn(1, 3, 32, 32, device=device)
++                    self.assertEqual(
++                        ref(x),
++                        torch.compile(op)(x),
++                        atol=0,
++                        rtol=0,
++                    )
++
++                torch._dynamo.reset()
++                lowerings.pop(op.default, None)
++                lowerings.pop(op, None)
++
++    def test_upsample_nearestnd_symbolic_output_size_one_graph(self):
++        # The division is deferred to the kernel rather than guarded, so a
++        # caller sweeping output sizes stays on one graph. Guarding the divisor
++        # instead would add a specialization per size and, past
++        # torch._dynamo.config.recompile_limit, fall back to eager.
++        calls = 0
++        real = upsample_nearestnd
++
++        def counting(*args, **kwargs):
++            nonlocal calls
++            calls += 1
++            return real(*args, **kwargs)
++
++        with torch.library._scoped_library("test_ups_ops2", "FRAGMENT") as lib:
++            lib.define("ups2d(Tensor x, SymInt h, SymInt w) -> Tensor")
++
++            def ref(x, h, w):
++                return torch.nn.functional.interpolate(
++                    x, size=(int(h), int(w)), mode="nearest"
++                )
++
++            lib.impl(
++                "ups2d",
++                lambda x, h, w: x.new_empty((x.shape[0], x.shape[1], h, w)),
++                "Meta",
++            )
++            lib.impl("ups2d", ref, "CPU")
++
++            register_lowering(torch.ops.test_ups_ops2.ups2d)(
++                lambda x, h, w: counting(x, [h, w], (None, None), n=2)
++            )
++
++            def fn(x, sizes):
++                return torch.ops.test_ups_ops2.ups2d(x, sizes[0], sizes[1])
++
++            torch._dynamo.reset()
++            compiled = torch.compile(fn, dynamic=True)
++            x = torch.randn(1, 3, 32, 32)
++            for out_hw in [(64, 64), (72, 72), (80, 80), (96, 96), (100, 100)]:
++                ref_t = torch.randn(1, 3, *out_hw)
++                torch._dynamo.maybe_mark_dynamic(ref_t, 2)
++                torch._dynamo.maybe_mark_dynamic(ref_t, 3)
++                self.assertEqual(
++                    ref(x, *out_hw), compiled(x, ref_t.shape[-2:]), atol=0, rtol=0
++                )
++            self.assertEqual(calls, 1)
++
++            torch._dynamo.reset()
++            lowerings.pop(torch.ops.test_ups_ops2.ups2d.default, None)
++            lowerings.pop(torch.ops.test_ups_ops2.ups2d, None)
++
+ 
+ if __name__ == "__main__":
+     from torch._inductor.test_case import run_tests
+diff --git a/torch/_inductor/lowering.py b/torch/_inductor/lowering.py
+index 1176127f86..352d5ced31 100644
+--- a/torch/_inductor/lowering.py
++++ b/torch/_inductor/lowering.py
+@@ -5345,19 +5345,39 @@ def upsample_nearestnd(
+         raise AssertionError("expected: len(scales_x) == n")
+     o_sizes = output_size
+ 
+-    inv_scales = [i / o for i, o in zip(i_sizes, o_sizes)]
++    # `ops.constant` requires a concrete value, so `i / o` can only be folded
++    # here when `o` is concrete. `i_sizes` is guarded above, but `o_sizes` is not,
++    # so under dynamic shapes `o` may still be symbolic. `None` marks those dims,
++    # and `scale_fn` divides by `o_size` in the kernel instead. Guarding `o` here
++    # would specialize on the output size, costing a recompile per distinct size.
++    inv_scales = [
++        None if isinstance(o, sympy.Expr) and not o.is_number else i / o
++        for i, o in zip(i_sizes, o_sizes)
++    ]
+     for i, scale in enumerate(scales_x):
+         if scale is not None:
+             inv_scales[i] = 1.0 / scale
+ 
+-    def scale_fn(x, scale, size):
++    def scale_fn(x, inv_scale, o_size, size):
+         # Nearest Exact: input_index = round(scale * (output_index + 0.5) - 0.5)
+         #                            = floor(scale * (output_index + 0.5))
+         # Nearest: input_index = floor(scale * output_index)
+         x = ops.index_expr(x, torch.float32)
+         if exact:
+             x = ops.add(x, ops.constant(0.5, torch.float32))
+-        x = ops.mul(x, ops.constant(scale, torch.float32))
++        if inv_scale is None:
++            # Divide at runtime. Eager computes the scale as a float32 division
++            # (`compute_scales_value` in ATen/native/UpSample.h), so use div_rn
++            # to get the same correctly-rounded result -- plain `/` lowers to
++            # Triton's approximate div.full, and being one ulp off changes the
++            # floored index below.
++            inv_scale = ops.div_rn(
++                ops.constant(size, torch.float32),
++                ops.index_expr(o_size, torch.float32),
++            )
++        else:
++            inv_scale = ops.constant(inv_scale, torch.float32)
++        x = ops.mul(x, inv_scale)
+         x = ops.to_dtype(x, torch.int32)
+         return ops.indirect_indexing(x, size, check=False)
+ 
+@@ -5365,7 +5385,13 @@ def upsample_nearestnd(
+         x = idx[-n:]
+         b = idx[:-n]
+         return x_loader(
+-            [*b, *[scale_fn(i, s, size) for i, s, size in zip(x, inv_scales, i_sizes)]]
++            [
++                *b,
++                *[
++                    scale_fn(i, s, o_size, size)
++                    for i, s, o_size, size in zip(x, inv_scales, o_sizes, i_sizes)
++                ],
++            ]
+         )
+ 
+     return Pointwise.create(
