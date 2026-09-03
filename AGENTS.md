@@ -81,6 +81,36 @@ PyTorch `main`, run focused tests plus lint/type/pre-commit checks in a real
 PyTorch checkout, and re-run the guard matrix on CPU and CUDA. The planned
 order is PR3, PR1, PR2.
 
+## Ongoing tasks
+
+### Completed in this checkout
+
+- Reduced and fixed the original TorchInductor dynamic-shape compile-time crash
+  for the pinned PyTorch 2.3.1 workload.
+- Re-ran CPU, A100, H100, and RTX PRO 6000 Blackwell experiments. Blackwell
+  evidence is recorded separately under `evidence/logs/` and is not B200 data.
+- Recorded the SymInt division-rounding gap and the eager CUDA nearest-backward
+  inconsistency with standalone repro scripts.
+- Updated the README, PR plan, issue notes, environment requirements, and
+  contribution-policy guidance. The latest documentation commit is `f6a50d0`.
+
+### Still in progress
+
+1. Re-run prior-art searches and current issue labels immediately before filing.
+2. Rewrite Issues A–D in the author's own words, then wait for each linked issue
+   to receive PyTorch's `actionable` label. Add the eager backward reproduction
+   to existing PyTorch issue #97135 rather than opening a duplicate.
+3. After the label gate and CLA, rebuild current PyTorch `main`, rebase each
+   one-concern branch, and rerun focused tests, broader tests, lint, types, and
+   pre-commit checks before any PyTorch PR.
+4. Investigate a coordinated native forward/backward nearest-neighbor fix and
+   validate whether the SymInt rounding flag should cover symbolic scalar math.
+   Neither follow-up is an upstream-ready patch yet.
+
+The profile repository itself may be pushed when the user explicitly requests
+it. PyTorch issues, comments, PRs, and code pushes require the same human review,
+issue-first gate, and AI disclosure described below.
+
 ## Claim boundaries
 
 - The PyTorch 2.3.1 incident was a compile-time crash, not wrong results, and
