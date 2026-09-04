@@ -1,23 +1,24 @@
-# A TorchInductor dynamic-shape bug, from HTTP 500 to root cause
+# Debugging a TorchInductor dynamic-shape compiler failure
 
-I was serving SDXL behind an HTTP endpoint. Requests at some resolutions returned
-**500 with a `sympy` traceback** — symbolic-algebra errors from a request to generate
-an image. This repository is how I got from that to a one-line fix in
-`torch/_inductor/index_propagation.py`, and to three patches plus four bug reports
-against current PyTorch `main`.
+A variable-resolution SDXL workload exposed a TorchInductor compile failure in
+PyTorch 2.3.1. Some image sizes compiled normally; others reached a symbolic-value
+conversion error inside nearest-neighbour upsampling. This repository records how I
+reduced that failure, found the interaction between dynamic shapes, `size=`, and
+dispatch mode, and built a one-line local mitigation in
+`torch/_inductor/index_propagation.py`.
 
-Everything reproduces **on a laptop CPU in seconds**, with `torch==2.3.1` as the only
-dependency.
+The historical failure and local fix reproduce **on a laptop CPU in seconds**, with
+`torch==2.3.1` as the only dependency.
 
 ```bash
 pip install torch==2.3.1
 ./demo.sh cpu          # fail -> explain -> fix -> verify, ~2 min
 ```
 
-**What I want you to take from this repo:** the interesting work was not the patch. It
-was that the bug needed *three simultaneous ingredients*, the third of which is
-invisible unless you know how ATen dispatch interacts with decompositions — and four
-reasonable attempts to reproduce it failed first (§4).
+The patch is the smallest part of the story. The failure needed *three simultaneous
+ingredients*, one of which is invisible unless you know how ATen dispatch interacts
+with decompositions. Four reasonable reproductions missed that ingredient before the
+fifth isolated it (§4).
 
 I found the production failure, reduced it, and wrote the original fix while debugging
 my own dynamic-shape workload. I later used Claude and Codex as supporting tools: to
@@ -27,17 +28,28 @@ such instead of being folded into that story.
 
 ---
 
-## Honest status, before anything else
+## Start here
 
-I would rather you read these five lines than discover them later.
-
-| | |
+| Question | Short answer |
 |---|---|
-| Is this an open bug in current PyTorch? | **No.** torch ≥ 2.4 compiles it (verified on 2.4.0, 2.7.0, 2.11.0, 2.13.0). §3 explains what upstream changed. |
-| Was it a wrong-results bug? | **No — a compile-time crash.** Numerics were bit-exact throughout. |
-| Is anything merged into PyTorch? | **No. Nothing has been pushed.** The three patches are written, GPU-verified, and staged. |
-| Then why does the repo exist? | The deployment was pinned to 2.3.1 and needed the compiled path. The reasoning is the deliverable. |
-| Did the same investigation find anything live? | **Yes** — plain `F.interpolate` under `dynamic=True` on CUDA returns **wrong pixels** on current 2.13. A forward prototype works, but a newly isolated CUDA backward inconsistency makes it unsafe to submit alone ([§6](#6-upstream-what-i-found-on-current-main)). |
+| What originally failed? | PyTorch 2.3.1 could not compile a dynamic nearest-neighbour resize written with `size=` under `inference_mode`. It was a **compile-time crash**, not wrong output. |
+| What fixed the deployment? | A one-line local fallback in `index_propagation.py`, verified against eager on CPU and CUDA. |
+| Is that original failure still open upstream? | **No.** PyTorch 2.4 and newer avoid the reachable path. The latent lowering defect remains when the lowering is called directly. |
+| What new result matters most? | On PyTorch 2.13, ordinary `F.interpolate(..., mode="nearest")` with `dynamic=True` selects wrong pixels on CUDA for specific size ratios. It has a reproducible issue but no safe forward-only fix yet. |
+| How was the work checked? | Focused negative controls, 42 adversarial CPU/CUDA cases, a 63-case same-device comparison, and runs on A100, H100, and RTX PRO 6000 Blackwell. |
+| Has anything gone to PyTorch? | **No.** Three candidate patches and their tests are staged locally. Issues, CLA, `actionable` labels, a fresh `main` rebase/build, and PyTorch checks still come first. |
+
+The shortest tour is:
+
+1. Run `./demo.sh cpu` to see the historical failure, explanation, fix, and
+   verification.
+2. Read [§3](#3-root-cause) for the compiler mistake and
+   [§4](#4-the-fix-and-four-attempts-that-failed-first) for how it was isolated.
+3. Read [§6](#6-upstream-live-release-findings-and-candidate-main-fixes) for the
+   current-release findings, Blackwell results, and upstream status.
+
+To continue the contribution work in a later session, use
+[`upstream/NEXT_SESSION.md`](upstream/NEXT_SESSION.md) as the link and command index.
 
 ---
 
@@ -370,11 +382,14 @@ silently rot.
 
 ---
 
-## 6. Upstream: what I found on current `main`
+## 6. Upstream: live release findings and candidate `main` fixes
 
-Having understood the 2.3.1 defect, I ran the same investigation against `main`. Four
-independent findings, first on A100 and H100 and now re-verified on an RTX PRO 6000
-Blackwell GPU, torch 2.13.0+cu130.
+Having understood the 2.3.1 defect, I compared the current release wheel with the
+corresponding code on PyTorch `main`. Four independent findings were first checked on
+A100 and H100, then re-verified on an RTX PRO 6000 Blackwell GPU with torch
+2.13.0+cu130. The candidate patches target an older `main` snapshot and must be
+rebased after the issue gate. The latest Blackwell verification is dated 2026-09-04;
+this GPU is SM 12.0, but it is not a B200.
 Narrative in **[`PR.md`](PR.md)**; submission material in **[`upstream/`](upstream/)**;
 every measurement in **[`evidence/`](evidence/)**.
 
@@ -420,8 +435,8 @@ second form puts *both* operands through the hardware reciprocal. Whether you ge
 or the other turns on ordinary Python scoping: a closure over a module global folds the
 size; a closure over a local keeps it symbolic. `37→74` is wrong **only** in the second
 form (36/74 vs 0/74), so it is excluded from the report; all four ratios above are wrong
-in **both**, on A100 and H100. `evidence/issueA_runtime_divide.py` prints both columns
-per ratio, one process each.
+in **both** forms on A100, H100, and the RTX PRO 6000 Blackwell host.
+`evidence/issueA_runtime_divide.py` prints both columns per ratio, one process each.
 
 ### B, C, D — three fixes, written and staged
 
@@ -443,15 +458,17 @@ per ratio, one process each.
 A 2×2 pooling window is 4 unrolled loads; 8×8 is 64. Different kernels, not one kernel
 with a different argument.
 
-⚠️ **PRs 1 and 3 are not ATen-reachable today** — the decompositions fire first
-(measured: **0** lowering hits across 8 entry points). Both PR bodies say so up front.
-Overclaiming reachability is the fastest way to lose a review.
+⚠️ **PRs 1 and 3 are not ATen-reachable today.** For PR1 the upsample op is
+decomposed before lowering. For PR3 the forward decomposition runs before autograd,
+so the backward graph contains `_unsafe_index_put` instead of the backward upsample
+op (measured: **0** lowering hits across 8 entry points). Both PR bodies say so up
+front. Overclaiming reachability is the fastest way to lose a review.
 
 ### Evidence
 
 - **6 new tests pass, and each fails with only its own fix reverted.** A test that
-  passes with its fix reverted is not a regression test. Full matrix re-run on H100
-  2026-08-30.
+  passes with its fix reverted is not a regression test. The full matrix was re-run
+  on the RTX PRO 6000 Blackwell host on 2026-09-04.
 - **Strict no-op: 63/63 compiled results bit-identical with and without the patches**,
   same GPU, same session — 63 real `F.interpolate`/`nn.Upsample` configurations
   (`size=` and `scale_factor=`, 1-D/2-D/3-D, static and dynamic, forward and autograd).
@@ -459,12 +476,15 @@ Overclaiming reachability is the fastest way to lose a review.
   `scales_x` on one dim, ULP-hostile ratios, fp16/bf16, non-contiguous, degenerate
   sizes. Coverage *verified* by instrumenting the predicate, so the deferred branch is
   known to have run.
-- **Full dynamic-shapes suite: 2621 tests, 1 failure — pre-existing**, identical with
-  all patches reverted.
-- **RTX PRO 6000 Blackwell:** the full six-test guard matrix, 42/42 adversarial cases,
-  and a same-device 63-case ON/OFF digest all pass. The controlled division benchmark
-  resolves no slowdown on this GPU, but does not replace the A100 ≈2% result or imply
-  anything about B200. See [`evidence/logs/blackwell_20260903.md`](evidence/logs/blackwell_20260903.md).
+- **Full dynamic-shapes suite with patches ON: 2621 tests, 1 failure.** The failure is
+  a pre-existing inverted-xfail reproduced with all patches OFF; no failure was
+  attributable to these changes. The full OFF arm was not run at that scale.
+- **RTX PRO 6000 Blackwell:** the full six-test guard matrix and 42/42 adversarial
+  cases passed again on 2026-09-04. The prior day's same-device 63-case ON/OFF digest
+  also passed, and its controlled division benchmark resolved no slowdown on this GPU.
+  That does not replace the A100 ≈2% result or imply anything about B200. See
+  [`evidence/logs/blackwell_20260904.md`](evidence/logs/blackwell_20260904.md) and
+  [`evidence/logs/blackwell_20260903.md`](evidence/logs/blackwell_20260903.md).
 - **Codex follow-up:** `TORCHINDUCTOR_EMULATE_DIVISION_ROUNDING=1` fixes ordinary
   integer-tensor division but does not reach the equivalent `IntTrueDiv` symbolic-shape
   path. The generic repro remains wrong at 191/192 values. This is a separate lead, not
@@ -472,10 +492,14 @@ Overclaiming reachability is the fastest way to lose a review.
 
 ### Status
 
-**Nothing filed, nothing pushed.** The gate is procedural: PyTorch will not review a
+**Nothing filed, nothing pushed.** A fresh GitHub API, duplicate-search, and read-only
+source pass on 2026-09-04 found no superseding report or source fix for the three
+candidate patches; #97135 remains the right home for the eager CUDA backward
+reproduction. PyTorch will not review a
 new contributor's PR without a linked issue labelled `actionable`, so the order is
-*file issue → wait for the label → push*. Remaining: sign the CLA, file the issues,
-rebase, `lintrunner -a`. `upstream/SUBMIT.md` has the commands and the claim limits.
+*human-authored issue → wait for the label → rebuild and rebase on current `main` →
+test and lint → push*. The CLA is still unsigned. `upstream/SUBMIT.md` records the
+commands and claim limits.
 
 ---
 
@@ -532,7 +556,8 @@ upstream/      README (send order) · issues.md (four issue bodies + prior art) 
 evidence/      RESULTS_a100.md (§1–§19) + 27 portable scripts + logs/, including the
                runs labelled INVALID and the A-vs-A controls
 tools/         state.py — the only sanctioned patch toggle · guard_matrix.sh
-origin/        the production traceback this started from (paths redacted, frames verbatim)
+origin/        the original traceback and notes (unredacted in this development tree;
+               the separate public cut contains the redacted copy)
 ```
 
 ---
@@ -555,8 +580,8 @@ full experiment and patch-state protocol.
 | | |
 |---|---|
 | the 2.3.1 artifact | torch `2.3.1+cu121`, sympy `1.14.0`, python `3.11.15` |
-| the upstream work | torch `2.13.0+cu130`, triton `3.7.1`, python `3.12.14` |
-| hardware | 1× A100-SXM4-80GB and 1× H100 80GB HBM3, driver 575.57.08 |
+| the upstream work | torch `2.13.0+cu130` (`cf30153c`), triton `3.7.1`; Python `3.12.14` for the A100/H100 runs and `3.11.16` for the Blackwell runs |
+| hardware | A100-SXM4-80GB and H100 80GB HBM3 (driver 575.57.08); RTX PRO 6000 Blackwell Server Edition, SM 12.0 (driver 580.126.09) |
 | GPU required? | **No.** The 2.3.1 bug and fix reproduce on CPU in seconds |
 
 **Verified here:** the traceback and its frames; the root cause read from source; the
@@ -567,12 +592,12 @@ Triton cache race and that serial compilation removes it (30/30, from ~1-in-18);
 2.4.0/2.7.0/2.11.0/2.13.0 are unaffected through ATen. For the upstream work: the
 lowering is unreachable through ATen (0 hits, 8 entry points) yet **still crashes**
 when reached; the three fixes are a strict no-op (63/63 identical results, same GPU
-A/B); 42/42 adversarial bit-exact; 6/6 guard matrix; 2621 tests with 1 pre-existing
-failure.
+A/B); 42/42 adversarial bit-exact; 6/6 guard matrix; and the 2621-test ON run with
+one failure independently shown to be pre-existing.
 
-**Original context, not re-verified here:** that this bug surfaced as an HTTP 500 in a
-production SDXL worker. That observation started the investigation; the repository does
-not contain or depend on that code, and the reproduction stands on its own. The
+**Original context, not re-verified here:** the failure first appeared in a production
+SDXL worker. That observation started the investigation; the repository does not
+contain or depend on the serving code, and the reproduction stands on its own. The
 `diffusers` excerpts in §1 are quoted from that library, which is never imported here.
 
 **Not claimed:** that the 2.3.1 patch is what upstream should adopt — it is a local

@@ -35,6 +35,7 @@ Each JSON maps 63 real `F.interpolate`/`nn.Upsample` configurations to a hash tr
 |---|---|
 | `h100_20260828.md` | H100 re-verification: 6/6 tests and guard matrix. Its initial A100-vs-H100 reading for `37→74` was later explained by literal-vs-symbolic divisor form, not architecture. |
 | `blackwell_20260903.md` | RTX PRO 6000 Blackwell verification, including the new SymInt rounding-flag gap and eager CUDA nearest-backward inconsistency. It must not be quoted as B200 data. |
+| `blackwell_20260904.md` | fresh Blackwell release-preparation verification: canonical environment reconstruction, stock repros, guard matrix, adversarial checks, Issue A filing ratios, and current upstream gate status. It must not be quoted as B200 data. |
 | `noop_blackwell_20260903_ON.json` / `noop_blackwell_20260903_OFF.json` | same-device 63-case Blackwell comparison; eager, compiled, and normalized-code differences are all 0/63 between patch states |
 | `perf_blackwell_20260903.json` | controlled RTX PRO 6000 division benchmark; no slowdown resolved here, but it does not supersede the ≈1.8% A100 result |
 | `a100_20260828_second.md` | the **second A100** session (`tan-1gpu-chip-w-0-2`): what reproduced unchanged, and the two performance claims it **corrected**. The prose version is `../RESULTS_a100.md` §18 — read that; this is the terse working note. |

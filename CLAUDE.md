@@ -23,15 +23,15 @@ Consolidated **2026-08-28** from `fix_nextfort_compile_dynamic/` and
 > session**, need `upstream/` and `evidence/`. Optimize `README.md` for the first and
 > this file for the second.
 
-## Status (2026-08-28)
+## Status (updated 2026-09-04)
 
 | item | state |
 |---|---|
 | 2.3.1 teaching artifact (`repro/`, `patch/`, `tests/`, `demo.sh`) | **complete and green** — 15 pass unpatched / 18 patched, re-verified on A100 2026-08-28 |
 | 3 upstream patches (`upstream/patches/`) | written; apply clean in sequence to `main` @ `b1716d913a` |
-| 6 regression tests | 6/6 pass on **A100 (×2) and H100**; each fails with only its own fix reverted |
+| 6 regression tests | 6/6 pass on **A100 (×2), H100, and RTX PRO 6000 Blackwell**; each fails with only its own fix reverted |
 | 4 issue drafts (`upstream/issues.md`) | written, **none filed** |
-| PR bodies (`upstream/PR{1,2,3}_BODY.md`) | ready to paste — **perf wording corrected 2026-08-28, see below** |
+| PR bodies (`upstream/PR{1,2,3}_BODY.md`) | local review drafts; stale perf, code-hash, and PR3 reachability wording corrected 2026-09-04 |
 | CLA | **not signed** |
 | `lintrunner -a` | **never run** (no PyTorch build on this box) |
 
@@ -186,6 +186,7 @@ lowering. Say so explicitly in both. Overclaiming reachability loses the review.
 | **2026-08-28** (later still, `tan-1gpu-chip-w-0-2`) | 1× **A100**-SXM4-80GB sm_80 | `evidence/RESULTS_a100.md` **§18**: second independent A100. 6/6 tests, 42/42 adversarial, 63-case no-op, `37→74` = 36/74 again. **Two perf claims corrected** (§18.4 `div_rn`, §18.5 PR2), Issue A's mechanism located at **bit level**, and a validated **predictor** for choosing filing ratios. 2.3.1 artifact re-run 15/0 → 18/0 |
 | **2026-08-30** (`tan-1gpu-chip-0-2`) | 1× **H100** 80GB HBM3 | `evidence/RESULTS_a100.md` **§19**: strict no-op re-measured as a **same-box ON/OFF A/B** (63/63 compiled results identical — cross-hardware digest comparisons are invalid, the eager hashes differ too), guard matrix 6/6 all four states, 42/42 adversarial, `37→74` re-explained as **divisor-form** dependence, prior art re-read from the **GitHub API**, Issue A's snippet run verbatim. Two documentation defects fixed. 2.3.1 artifact re-run 15/0 |
 | **2026-09-03** | 1× **RTX PRO 6000 Blackwell Server Edition**, sm_120 | `evidence/logs/blackwell_20260903.md`: guard matrix 6/6, 42/42 adversarial, same-device 63-case no-op, controlled perf, SymInt rounding-flag gap, and eager CUDA backward inconsistency. This is Blackwell evidence, not B200 evidence. |
+| **2026-09-04** | 1× **RTX PRO 6000 Blackwell Server Edition**, sm_120 | `evidence/logs/blackwell_20260904.md`: canonical environment rebuilt, stock findings re-run, guard matrix 6/6, 42/42 adversarial, issue ratios and follow-up invariants rechecked, and GitHub labels/duplicate searches refreshed. |
 
 ⚠️ **`37→74` is not architecture-dependent — it is DIVISOR-FORM dependent (corrected
 2026-08-30, `RESULTS_a100.md` §19.3).** The earlier reading ("36/74 on A100, 0/74 on

@@ -1,4 +1,4 @@
-# PR #2 body — paste into GitHub
+# PR #2 body — local review draft
 
 **Branch:** `inductor-ops-constant-contract` (stacked on PR #1)
 **Patch:** `0002-inductor-Reject-symbolic-values-in-ops.constant.patch`
@@ -50,7 +50,7 @@ place and names both alternatives in the message, so the error is actionable whe
   wrapping/unwrapping every other op gets. Both orderings matter: checking before `_unwrap`
   would reject an `OpsValue` wrapping a concrete number, and returning
   `OpsWrapper._wrap(_ops.constant(...))` directly would make `constant` the only op that does
-  not unwrap its argument. No current caller passes a wrapped value — all 112 `ops.constant`
+  not unwrap its argument. No current caller passes a wrapped value — all 111 `ops.constant`
   call sites pass plain scalars — so this is about not leaving a divergence behind.
 - sympy numbers (`sympy.Integer`, `sympy.Float`, `sympy.Rational`) are `sympy.Expr` but
   concrete, so the `is_number` clause keeps them accepted.
@@ -63,10 +63,12 @@ place and names both alternatives in the message, so the error is actionable whe
 
 ### Cost
 
-One `isinstance` plus one `_unwrap` per call. A constant-heavy graph makes **160
-`ops.constant` calls per compile**, so about **60 µs total — 0.002% of that compile**.
-Generated code is **byte-identical across 96 configurations** (24 constant-using ops ×
-CPU/CUDA × static/dynamic), so this is a strict no-op on output.
+This check runs during lowering and never appears in a generated kernel, so it has zero
+runtime cost. In a cold-cache, interleaved 24-workload measurement, the checked variant
+took **1.039×** the lowering time (range 1.033–1.041), or about **3.9%**. That cost is
+real and should not be described as noise. Separately, a same-device comparison with
+all three candidates ON versus OFF found identical compiled result hashes for
+**63/63** real upsample configurations.
 
 ### Testing
 
@@ -100,4 +102,3 @@ Keep one accurate sentence; **do not submit without it.** See `SUBMIT.md` for th
 > measurement are mine; I have read the change and can answer for every line of it.
 
 Delete this section from the pasted body.
-

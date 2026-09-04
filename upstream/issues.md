@@ -29,19 +29,38 @@ Two more rules from `CONTRIBUTING.md` that shape what goes in these issues:
   not a quoted requirement from `CONTRIBUTING.md`.
 - Sign the **CLA** before the PR.
 
-**Environment for every claim below** (re-probe before filing; this container's GPU
-changes between sessions):
+**Recorded environments** (re-probe again immediately before filing):
 
-```
-torch 2.13.0+cu130   (release wheel, git cf30153c4c131c8164ee7798e5022d810682e2cb)
-triton 3.7.1
-NVIDIA A100-SXM4-80GB, driver 575.57.08
-python 3.12.14
-```
+- A100/H100: torch 2.13.0+cu130 at `cf30153c`, triton 3.7.1,
+  Python 3.12.14, driver 575.57.08.
+- RTX PRO 6000 Blackwell Server Edition, SM 12.0: the same torch revision and
+  Triton, Python 3.11.16, driver 580.126.09. Fresh run: 2026-09-04.
+
+The Blackwell product tested here is not a B200. Do not generalize its performance
+results to B200.
 
 ---
 
-## Prior art check (done 2026-08-26; refreshed 2026-08-28; **re-verified from the API 2026-08-30**)
+## Prior art check (latest API and duplicate-search refresh: **2026-09-04**)
+
+> ### ✅ 2026-09-04 refresh
+>
+> GitHub API state is unchanged where it matters: #97135 is open with
+> `needs reproduction`; #175154 is open and still lacks `actionable`; #185806
+> and #159550 remain closed. Fresh searches returned no title hit for
+> `upsample nearest` + `dynamic shapes` or `interpolate nearest` + `wrong dynamic`;
+> `upsample_nearestnd` still returns only the two old PRs; and
+> `upsample_nearest2d_backward inductor` still returns only unrelated refactor
+> PR #179466. The broader `ops.constant symbolic` search has 37 results, none
+> matching Issue C's contract defect. Re-run this cheap search at actual filing
+> time because issue state can change after this repository update.
+>
+> Read-only source inspection of `main` at `4f5a382575c6` (2026-09-04) also
+> confirms the code defects remain: `upsample_nearestnd` still computes
+> `inv_scales = [i / o ...]` and passes the result to `ops.constant`;
+> `upsample_nearest2d_backward` still unpacks `input_size` without guarding it;
+> and `OpsWrapper` still has no explicit `constant` contract check. This is not a
+> rebase or a source-build validation.
 
 > ### ✅ 2026-08-30 refresh — labels read from `api.github.com`, not rendered pages
 >
@@ -123,6 +142,8 @@ message is unhelpful*, which is Issue C's point.
 
 ---
 
+<a id="issue-a"></a>
+
 ## Issue A — `F.interpolate(mode="nearest")` returns wrong pixels under `dynamic=True` on CUDA
 
 **This is the strongest of the four: currently-shipping silent wrong results, reachable
@@ -174,8 +195,9 @@ from ordinary user code, no custom op and no `inference_mode`.** File this one f
 > nearest-exact 384->363: 2/363 rows differ; first [(60, 63, 64)]
 > ```
 >
-> All of these reproduce on **A100 (SM 8.0) and H100 (SM 9.0)** — verified on H100
-> 2026-08-30 and on two separate A100s.
+> All of these reproduce on **A100 (SM 8.0), H100 (SM 9.0), and RTX PRO 6000
+> Blackwell (SM 12.0)**. The exact five-line result block above was re-run on the
+> Blackwell host on 2026-09-04.
 >
 > Worth stating so a non-reproduction is not mistaken for absence: **the visibility of a
 > given ratio depends on the form of the emitted divide.** Inductor emits `ks0 / 74` when
@@ -188,7 +210,7 @@ from ordinary user code, no custom op and no `inference_mode`.** File this one f
 >
 > ### Expected
 >
-> All four print `0/N rows differ`, as they do with `dynamic=False` and as they do on CPU.
+> All five print `0/N rows differ`, as they do with `dynamic=False` and as they do on CPU.
 >
 > ### Where it comes from
 >
@@ -239,9 +261,11 @@ from ordinary user code, no custom op and no `inference_mode`.** File this one f
 >
 > ### Versions
 >
-> torch 2.13.0+cu130, triton 3.7.1, python 3.12.14. Reproduces on the release wheel on
-> both **A100-SXM4-80GB** and **H100 80GB HBM3** (driver 575.57.08). CPU and
-> `dynamic=False` are unaffected.
+> torch 2.13.0+cu130 (`cf30153c`), triton 3.7.1. Reproduces on the release wheel on
+> **A100-SXM4-80GB** and **H100 80GB HBM3** (Python 3.12.14, driver 575.57.08),
+> and on **RTX PRO 6000 Blackwell Server Edition** (Python 3.11.16, driver
+> 580.126.09). CPU and `dynamic=False` are unaffected. This is Blackwell SM 12.0
+> evidence, not B200 evidence.
 
 **Note for the PR that follows, not for the issue:** the fix touches the *decomposition*
 (`arange/mul/_unsafe_index`), which is a different code path from the
@@ -259,6 +283,8 @@ forward fix must also preserve the native CUDA backward contract, which currentl
 fails the eager transpose check at sensitive ratios.
 
 ---
+
+<a id="issue-b"></a>
 
 ## Issue B — `upsample_nearestnd` lowering crashes on a symbolic output size
 
@@ -342,6 +368,8 @@ fails the eager transpose check at sensitive ratios.
 
 ---
 
+<a id="issue-c"></a>
+
 ## Issue C — `ops.constant` accepts a symbolic value and fails ~a dozen frames later
 
 **Title:** `[inductor] ops.constant silently accepts a symbolic value; the failure surfaces far from the lowering that caused it`
@@ -404,6 +432,8 @@ fails the eager transpose check at sensitive ratios.
 > torch 2.13.0+cu130 / A100.
 
 ---
+
+<a id="issue-d"></a>
 
 ## Issue D — `upsample_nearest2d_backward` crashes on a symbolic `input_size`
 

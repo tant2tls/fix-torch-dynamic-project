@@ -1,8 +1,10 @@
 # Sending these three PRs
 
-Everything here was verified on **1× A100-SXM4-80GB** (driver 575.57.08), torch
-**2.13.0+cu130** / triton 3.7.1 / python 3.12.14, plus CPU checks on 2.13.0+cpu.
-Full evidence: `../evidence/RESULTS_a100.md`. Issue drafts: `issues.md`.
+The candidate patches were verified on A100 and H100, then re-verified on an
+**RTX PRO 6000 Blackwell Server Edition** (SM 12.0, driver 580.126.09), torch
+**2.13.0+cu130** (`cf30153c`) / triton 3.7.1 / Python 3.11.16. This is Blackwell
+evidence, not B200 evidence. Full evidence: `../evidence/RESULTS_a100.md` and
+`../evidence/logs/blackwell_20260904.md`. Issue working notes: `issues.md`.
 
 **Per-PR submission docs — read the one for the PR you are sending:**
 
@@ -32,8 +34,8 @@ the filing order; rewrite the issue text in your own words before filing.
 
 ## ⚠️ `AI_POLICY.md` — read before writing a single word of a PR or issue
 
-Verified verbatim against `https://raw.githubusercontent.com/pytorch/pytorch/main/AI_POLICY.md`
-on **2026-08-30**. Three rules bear directly on this submission:
+Re-verified against PyTorch's current `AI_POLICY.md` and `CONTRIBUTING.md` on
+**2026-09-04**. Three rules bear directly on this submission:
 
 > "*AI-generated content in comments, issues, or PRs must be clearly disclosed and
 > contained* (e.g. using a code block or a quote block). AI-generated content must be

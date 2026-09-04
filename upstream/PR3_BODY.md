@@ -1,4 +1,4 @@
-# PR #3 body — paste into GitHub
+# PR #3 body — local review draft
 
 **Branch:** `inductor-upsample-backward-symbolic-input-size`
 **Patch:** `0003-inductor-Guard-input_size-in-upsample_nearest2d_back.patch`
@@ -63,10 +63,13 @@ each recompiles rather than reusing a kernel built for another size, and all are
 
 ### Reachability
 
-Not reachable from autograd today: the backward is decomposed before Inductor sees it. Zero
+Not reachable from autograd today, but the backward op itself is **not** in the
+decomposition table. The forward is decomposed to
+`arange`/`mul`/`_unsafe_index` before autograd runs, so the backward graph contains
+`_unsafe_index_put` rather than `aten.upsample_nearest2d_backward`. I measured zero
 lowering hits across `F.interpolate` and `nn.Upsample` backward, with `size=` and
-`scale_factor=`, static and dynamic, and with the input's spatial dims marked dynamic. The
-test therefore calls `aten.upsample_nearest2d_backward` directly.
+`scale_factor=`, static and dynamic, and with the input's spatial dims marked dynamic.
+The test therefore calls `aten.upsample_nearest2d_backward` directly.
 
 So, as with PR #1: hardening a reachable-but-not-currently-reached lowering, not a
 user-visible regression.
@@ -84,7 +87,8 @@ exactly-divisible path that routes to `avg_pool2d` and the general adaptive-pool
 Real autograd is unaffected: **20/20** gradient comparisons through `F.interpolate` remain
 bit-identical (`nearest` / `nearest-exact` × `size=` / `scale_factor=` 2.0 / 1.5 /
 non-divisible / downsample × static / dynamic), and the static direct backward op is
-unchanged. Verified on an H100, torch 2.13 + CUDA 13.0.
+unchanged. Verified on H100 and re-run through the six-test guard matrix on an RTX PRO
+6000 Blackwell Server Edition, torch 2.13 + CUDA 13.0, on 2026-09-04.
 
 ---
 
@@ -102,4 +106,3 @@ Keep one accurate sentence; **do not submit without it.** See `SUBMIT.md` for th
 > measurements are mine; I have read the change and can answer for every line of it.
 
 Delete this section from the pasted body.
-

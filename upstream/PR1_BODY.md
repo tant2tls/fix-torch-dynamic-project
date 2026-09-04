@@ -1,4 +1,4 @@
-# PR #1 body — paste into GitHub
+# PR #1 body — local review draft
 
 **Branch:** `inductor-upsample-symbolic-output-size`
 **Patch:** `0001-inductor-Fix-symbolic-output_size-in-upsample_neares.patch`
@@ -37,15 +37,16 @@ The runtime division uses `ops.div_rn` rather than `ops.truediv`, for the same r
 `_floor_div_floating` already uses `_div_rn`: Triton's default fp32 division is an
 approximate reciprocal that can land one ulp below the true quotient and change the floored
 index. Eager computes this scale as a float32 division (`compute_scales_value`,
-`ATen/native/UpSample.h`), so `div_rn` reproduces it exactly. Sweeping `(i, o)` over
-`1..512`, an approximate reciprocal disagrees with a correctly-rounded divide on the floored
-index for **11695** pairs — `448 -> 192` at index 27 is one, which is why it is in the test.
-Verified on an H100: the generated kernel contains `triton.language.div_rn`, and all 30
-shape/mode combinations are bit-exact against eager.
+`ATen/native/UpSample.h`), so `div_rn` reproduces it exactly. Across nine measured ratios
+and 3305 output coordinates, the approximate divide disagrees with eager on **45**
+coordinates; `div_rn` disagrees on **0**. The generated kernel contains
+`triton.language.div_rn`, and the 42-case adversarial CPU/CUDA sweep is bit-exact.
 
-Keeping `i / o` for concrete `o` is what makes this a no-op for existing callers: generated
-code is byte-identical on 16/16 static and `scale_factor=` paths (hashing `run_and_get_code`
-output with and without the patch).
+Keeping `i / o` for concrete `o` makes this a no-op for existing callers. In a
+same-device comparison with all three candidates ON versus OFF, all **63/63 compiled
+result hashes are identical**.
+Raw generated-code hashes are intentionally not used for this claim because an A-vs-A
+control changed 50/63 of them even with the patch state held constant.
 
 `inv_scales` holds `float | None`, where `None` means "deferred", and `scale_fn` takes the
 output size as its own parameter. It deliberately does *not* store the output size *in*
@@ -129,7 +130,8 @@ static `size=`, 1d/2d/3d, both modes).
 
 Wider sweep: **276 (input, output) shape pairs × `nearest`/`nearest-exact` × CPU/CUDA =
 1104/1104 bit-exact**, `atol=rtol=0`, spanning ratios from 512→3 to 7→1000 and including the
-ULP-hostile ones. Generated code on existing ATen paths is **byte-identical**, 16/16.
+ULP-hostile ones. The current six-test guard matrix and the 42-case adversarial sweep were
+re-run on an RTX PRO 6000 Blackwell Server Edition on 2026-09-04.
 
 Two details behind the `div_rn` choice, in case they come up:
 `nearest_neighbor_compute_source_index` takes `floor` of a non-negative product, so eager's
@@ -160,4 +162,3 @@ worse than none.
 
 Then delete this whole section from the pasted body — it is instructions to you, not text
 for the PR.
-

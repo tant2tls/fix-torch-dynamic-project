@@ -2,7 +2,7 @@
 
 A report of the upstream work that came out of this project. The teaching artifact in this
 directory (torch 2.3.1, `repro/` + `patch/` + `tests/`) is what *found* the bug; this file
-is what happened when the same defect was chased on current `main`.
+records the release-wheel findings and the candidate changes prepared for `main`.
 
 The original workload, reduction, diagnosis, and local fix are mine. Claude and Codex
 were used later as supporting tools for adversarial review, experiment design,
@@ -13,8 +13,10 @@ or line eventually sent upstream.
 **Everything referenced here now lives in this repository:** the issue drafts and
 per-PR submission docs in [`upstream/`](upstream/), the `git am`-ready patches in
 [`upstream/patches/`](upstream/patches/), the full A100 evidence in
-[`evidence/RESULTS_a100.md`](evidence/RESULTS_a100.md), and the H100 re-verification
-in [`evidence/logs/h100_20260828.md`](evidence/logs/h100_20260828.md). The only
+[`evidence/RESULTS_a100.md`](evidence/RESULTS_a100.md), the H100 re-verification
+in [`evidence/logs/h100_20260828.md`](evidence/logs/h100_20260828.md), and the latest
+Blackwell pass in
+[`evidence/logs/blackwell_20260904.md`](evidence/logs/blackwell_20260904.md). The only
 external artifact is the local `pytorch` checkout the patches were generated from
 (branch `prseries` on `b1716d913a`) — the patches reproduce it exactly, so it is not
 needed here.
@@ -24,10 +26,10 @@ needed here.
 | | |
 |---|---|
 | **Verified on** | A100-SXM4-80GB, H100 80GB HBM3, and RTX PRO 6000 Blackwell Server Edition |
-| **torch** | 2.13.0+cu130 (release wheel, git `cf30153c`), triton 3.7.1, python 3.12.14 |
+| **torch** | 2.13.0+cu130 (release wheel, git `cf30153c`), triton 3.7.1; Python 3.12.14 on A100/H100 and 3.11.16 on Blackwell |
 | **CPU checks** | torch 2.13.0+cpu |
 | **Branch** | `prseries` on `b1716d913a`, +299/−5 across 3 files |
-| **Status** | staged and verified; **nothing pushed** (needs a GitHub account, CLA, and an `actionable` issue) |
+| **Status** | staged and release-wheel verified; **nothing pushed** (needs the CLA, `actionable` issues, and a fresh `main` rebase/build) |
 
 ---
 
@@ -241,10 +243,10 @@ free" and never "not slower."
   on one dim only, nearest-exact at ULP-sensitive ratios, 1-D/3-D, fp16/bf16, non-contiguous
   input, degenerate sizes, downsampling. Coverage *verified* by instrumenting the predicate,
   so the deferred branch is known to have run rather than silently taking the concrete path.
-- **Full dynamic-shapes suite: `Ran 2621 tests`, 1 failure — pre-existing and unrelated**
-  (`test_unbacked_reduction_cpu`, an inverted-xfail that fails identically with all patches
-  reverted). Zero attributable failures. This is what makes PR 2's contract change
-  defensible.
+- **Full dynamic-shapes suite with patches ON: `Ran 2621 tests`, 1 failure.**
+  `test_unbacked_reduction_cpu` is a pre-existing inverted-xfail reproduced with all
+  patches OFF. Zero attributable failures; the full OFF arm was not run at this scale.
+  This is what makes PR 2's contract change defensible.
 - **PR 2 blast radius, measured:** 1221 `ops.constant` calls over a 24-case workload —
   98.94% plain values, 13 sympy-but-concrete, **0 sympy-symbolic**. Compile time with the
   check vs without, cold cache and interleaved: **≈3.9% slower** (1.033–1.041), i.e. a real
@@ -305,21 +307,66 @@ Each of these cost real time and each produced a result that *looked* fine:
 6. **Verify a failure is pre-existing before attributing it.**
    `test_reused_inline_asm_realized` fails on this box with all patches reverted.
 
-## 7. What remains
+## 7. Exact next steps for contributing to PyTorch
 
-- [ ] Sign the CLA.
-- [ ] Re-run the prior-art searches; they age.
-- [ ] Write Issues A/B/C/D in my own words from `upstream/issues.md`: concise
-      observed behavior and repro only, with no AI-generated solution text.
-- [ ] Add the eager backward reproduction to existing issue #97135; do not duplicate it.
-- [ ] Wait for each proposed PR's issue to receive **`actionable`**.
-- [ ] Do not push the current research patches or open draft PRs before that label.
-- [ ] Only then create a fresh branch from current `main`, rebuild, and run focused
-      plus relevant broader tests.
-- [ ] Re-run the guard matrix and `pr2_blast_radius.py`; its source counts will drift.
-- [ ] Run lint, type, and pre-commit checks; keep one concern per PR.
-- [ ] Personally review the exact diff and disclosure text before any push.
-- [ ] Optional: run the 2621-test suite once with patches OFF for symmetry.
+For a later session, start with the compact link and command index in
+[`upstream/NEXT_SESSION.md`](upstream/NEXT_SESSION.md).
+
+### Readiness now
+
+| Gate | State |
+|---|---|
+| Release-wheel CPU/CUDA tests | **Done** |
+| A100, H100, and RTX PRO 6000 Blackwell validation | **Done** |
+| Prior-art and current-label refresh | **Done 2026-09-04; repeat at filing** |
+| Human-authored issues | **Not done** |
+| CLA | **Not signed** |
+| Maintainer `actionable` labels | **Not received** |
+| Fresh branches from current PyTorch `main` | **Not created** |
+| Source build, lint, types, pre-commit | **Not run** |
+
+### Phase 1 — report the problems
+
+1. Sign the PyTorch CLA.
+2. Re-run the GitHub duplicate searches and label checks immediately before filing.
+3. Use `upstream/issues.md` as evidence notes, then write Issues A, B, C, and D in
+   my own words. Keep each report to observed behavior, a minimal reproduction,
+   expected versus actual output, and the exact environment. Do not paste an
+   AI-generated solution explanation.
+4. Add the eager CUDA forward/backward reproduction to existing issue #97135 rather
+   than opening a duplicate backward issue.
+5. Wait. Do not upload the stored patches or open a PR until the corresponding issue
+   is labelled **`actionable`**.
+
+### Phase 2 — rebuild each accepted change
+
+After a maintainer marks an issue actionable:
+
+1. Fetch current PyTorch `main` and create a fresh one-concern branch. Treat the
+   patches in `upstream/patches/` as references, not branches ready to upload.
+2. Reapply the smallest change manually and keep current upstream edits. PR3 is
+   expected to conflict near the `# pyrefly: ignore [not-iterable]` comment; preserve
+   that comment and add the guard below it.
+3. Build PyTorch from source and rerun the issue reproduction before and after the
+   change on CPU and CUDA.
+4. Run the focused tests, the broader relevant Inductor suites, the full guard
+   matrix, and `pr2_blast_radius.py` with a cold Inductor cache. Compare result hashes;
+   do not use raw generated-code hashes as no-op evidence.
+5. Run `lintrunner -a` or `spin lint`, the applicable type checks, and pre-commit.
+6. Review every changed line and rewrite the matching `PR*_BODY.md` draft so it
+   describes only the freshly tested branch. Include an accurate AI-assistance
+   disclosure and the reachability limitation.
+
+### Phase 3 — submit one PR at a time
+
+Submit in the planned order **PR3 → PR1 → PR2**. Link the actionable issue, leave the
+Reviewers field empty for triage, monitor CI, and answer review questions in my own
+words. Do not start the next PR until the preceding concern is resolved enough that
+its dependency and test-file context are clear.
+
+Optional evidence improvement: run the 2621-test suite once with all patches OFF for
+a symmetric full-suite comparison. This is useful, but it does not replace any gate
+above.
 
 ## 8. Claim discipline
 

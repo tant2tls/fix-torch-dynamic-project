@@ -1,17 +1,32 @@
-# `upstream/` — everything needed to submit
+# `upstream/` — staged material for human-reviewed submission
+
+## Readiness snapshot — 2026-09-04
+
+The release-wheel repros, six-test guard matrix, and 42-case adversarial sweep have
+been re-run on an RTX PRO 6000 Blackwell Server Edition (SM 12.0). Fresh GitHub API
+checks found no superseding issue, and read-only inspection of `main` at
+`4f5a382575c6` found both lowering defects and the permissive `OpsWrapper` unchanged.
+The work is still
+**not ready to push**: Issues B/C/D have not been filed or labelled `actionable`, the
+CLA is unsigned, and the patches have not been rebuilt, rebased, linted, or tested in
+a current PyTorch `main` checkout. The stored patches remain research artifacts until
+those gates are satisfied.
 
 ## Read in this order
 
-1. **`issues.md`** — the four issue bodies, the prior-art search, and the filing
+1. **`NEXT_SESSION.md`** — fast resume page with current issue, source, policy,
+   evidence, and local-artifact links.
+2. **`issues.md`** — the four issue bodies, the prior-art search, and the filing
    order. **File issues first**; PyTorch will not review a new contributor's PR
    without a linked issue labelled **`actionable`**.
-2. **`SUBMIT.md`** — shared context: the process gate, the three-commit stack, and
+3. **`SUBMIT.md`** — shared context: the process gate, the three-commit stack, and
    the cross-cutting evidence to quote in every PR.
-3. **`SUBMIT_PR3.md` → `SUBMIT_PR1.md` → `SUBMIT_PR2.md`** — in send order. Each
+4. **`SUBMIT_PR3.md` → `SUBMIT_PR1.md` → `SUBMIT_PR2.md`** — in send order. Each
    carries that PR's argument, the objections a reviewer will raise, and the limits
    of what it may claim.
-4. **`PR{1,2,3}_BODY.md`** — paste into GitHub once the issue is `actionable`.
-   Replace `#NNNNN` with the issue number.
+5. **`PR{1,2,3}_BODY.md`** — local review drafts. Once the issue is `actionable`,
+   rebase and re-test the code, then rewrite/review the body and replace `#NNNNN`
+   with the issue number before any GitHub action.
 
 ## Send order: PR3 → PR1 → PR2
 
